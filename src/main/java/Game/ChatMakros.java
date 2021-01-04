@@ -1,6 +1,11 @@
 package Game;
 
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.Map;
+
+import static Game.Phases.*;
 
 public class ChatMakros {
 
@@ -19,6 +24,37 @@ public class ChatMakros {
     public static String getPlayerName(String player) {
         final String name = playerNames.get(player);
         return name != null ? name : player;
+    }
+
+    public static void evaluateSendingMessage(JSONObject lastJson, JSONObject currentJson) {
+        String message = "";
+        Phases currentPhase = MarsController.getPhase(currentJson);
+        Phases lastPhase = MarsController.getPhase(lastJson);
+        final ArrayList<String> currentPlayers = MarsController.getActivePlayers(currentJson);
+        final ArrayList<String> lastActivePlayers = MarsController.getActivePlayers(lastJson);
+
+        if(currentPhase.equals(DRAFTING)) {
+            if (lastActivePlayers.size() > 1 && currentPlayers.size() == 1) {
+                message = ChatMakros.getMessage(currentPlayers.get(0));
+            } else if (lastActivePlayers.size() == 1 && currentPlayers.size() > 1) {
+                message = ChatMakros.getDraftMessage();
+            }
+        } else if (currentPhase.equals(RESEARCH)) {
+            if (lastPhase != null && !lastPhase.equals(RESEARCH))
+                message = ChatMakros.getResearchMessage();
+        } else if (currentPhase.equals(ACTION)){
+            if (lastPhase.equals(RESEARCH)) {
+                message = ChatMakros.getMessage(currentPlayers.get(0));
+            } else if (currentPlayers.size() == 1 && lastActivePlayers.size() > 0) {
+                if (!currentPlayers.get(0).equals(lastActivePlayers.get(0))) {
+                    message = ChatMakros.getMessage(currentPlayers.get(0));
+                }
+            }
+        }
+
+        if (!message.isEmpty()) {
+            Controller.sendWhatsAppMessage(message);
+        }
     }
 
     public static String getMessage(String player) {
