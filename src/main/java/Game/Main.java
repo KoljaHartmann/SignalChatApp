@@ -13,12 +13,13 @@ import static Game.Phases.RESEARCH;
 
 public class Main {
     //TODO failsaves
-    //TODO keepalive whatsapp
     //TODO MARS_URL als property
     //TODO npe bei path var catchen
     //TODO logging verbessern
+    //TODO headless als property
+    //TODO nur jar übertragen
 
-    private static final String MARS_URL = "http://168.119.225.172:8080/api/player?id=92f963bfe615";
+    private static final String MARS_URL = "http://168.119.225.172:8080/api/player?id=bb9b5de347dd";
 
     private static JSONObject lastJson;
 
@@ -30,6 +31,10 @@ public class Main {
             () -> {
                 try {
                     final JSONObject currentJson = Controller.readMarsJson(MARS_URL);
+                    if (lastJson == null) {
+                        System.out.println("First call to Mars");
+                        lastJson = currentJson;
+                    }
                     final ArrayList<String> currentPlayers = MarsController.getActivePlayers(currentJson);
                     final ArrayList<String> lastActivePlayers = MarsController.getActivePlayers(lastJson);
                     System.out.println("Phase: " + MarsController.getPhase(currentJson) + ",  lastActivePlayers: " + lastActivePlayers + " currentPlayers: " + currentPlayers);
