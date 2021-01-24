@@ -3,6 +3,9 @@ package Game;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.*;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class MarsController {
@@ -29,5 +32,19 @@ public class MarsController {
         return Phases.valueOf(phase.toUpperCase());
     }
 
+    public static JSONObject readMarsJson(String url) {
+        try (InputStream is = new URL(url).openStream()) {
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            int cp;
+            while ((cp = rd.read()) != -1) {
+                sb.append((char) cp);
+            }
+            return new JSONObject(sb.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new JSONObject();
+    }
 
 }

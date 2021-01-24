@@ -26,6 +26,7 @@ public class ChatMakros {
         return name != null ? name : player;
     }
 
+    //TODO logik konsolidieren mit activePlayers im MarsControler
     public static void evaluateSendingMessage(JSONObject lastJson, JSONObject currentJson) {
         String message = "";
         Phases currentPhase = MarsController.getPhase(currentJson);
@@ -39,6 +40,10 @@ public class ChatMakros {
             } else if (lastActivePlayers.size() == 1 && currentPlayers.size() > 1) {
                 message = ChatMakros.getDraftMessage();
             }
+        // start: testen über players ->  cardsInHandNbr > 0
+            // gameAge: 1,
+            // generation: 1,
+            // Nicht start: initialDraft = false
         } else if (currentPhase.equals(RESEARCH)) {
             if (lastPhase != null && !lastPhase.equals(RESEARCH))
                 message = ChatMakros.getResearchMessage();
@@ -53,7 +58,7 @@ public class ChatMakros {
         }
 
         if (!message.isEmpty()) {
-            Controller.sendWhatsAppMessage(message);
+            WhatsAppController.sendWhatsAppMessage(message);
         }
     }
 

@@ -1,22 +1,23 @@
 package Game;
 
-import org.json.JSONObject;
-import org.openqa.selenium.*;
+import com.google.common.collect.Lists;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
-import java.io.*;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 
 @SuppressWarnings("BusyWait")
-public class Controller {
+public class WhatsAppController {
 
     private static WebDriver driver;
 
-    public static void connectToWhatsapp() {
+    public synchronized static void connectToWhatsapp() {
         System.out.println("trying to connect to WhatsApp");
         FirefoxBinary firefoxBinary = new FirefoxBinary();
         firefoxBinary.addCommandLineOptions("--headless");
@@ -55,53 +56,16 @@ public class Controller {
         driver.close();
     }
 
-    public static void sendWhatsAppMessage(String message) {
-        waitForElement(By.xpath("//*[contains(text(), 'e-Spirit & Associates')]")).click();
+
+    private static void findChat(String chatName) {
+        waitForElement(By.xpath("//*[contains(text(), '" + chatName + "')]")).click();
+    }
+
+    public synchronized static void sendWhatsAppMessage(String message) {
+        findChat("e-Spirit & Associates");
         final WebElement parent = waitForElement(By.className("_1hRBM"));
         final WebElement textField = parent.findElement(By.className("_1awRl"));
         textField.sendKeys(message);
-        waitForElement(By.className("_2Ujuu")).click();
-    }
-
-    private static String readAll(Reader rd) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        int cp;
-        while ((cp = rd.read()) != -1) {
-            sb.append((char) cp);
-        }
-        return sb.toString();
-    }
-
-    public static JSONObject readMarsJson(String url) {
-        try (InputStream is = new URL(url).openStream()) {
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-            String jsonText = readAll(rd);
-            return new JSONObject(jsonText);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return new JSONObject();
-    }
-
-    public static void sendTestMessage() {
-        System.out.println("Sending test message");
-        final WebElement chat = waitForElement(By.xpath("//*[contains(text(), 'Laura <3')]"));
-
-
-        System.out.println("found chat");
-        try {
-            System.out.println("enabled: " + chat.isEnabled());
-            System.out.println("displayed:" + chat.isDisplayed());
-            chat.click();
-        } catch (Exception e) {
-            System.out.println("something went wrong!");
-            e.printStackTrace();
-        }
-        System.out.println("clicked chat");
-
-        final WebElement parent = waitForElement(By.className("_1hRBM"));
-        final WebElement textField = parent.findElement(By.className("_1awRl"));
-        textField.sendKeys("<3");
         waitForElement(By.className("_2Ujuu")).click();
     }
 
@@ -124,5 +88,22 @@ public class Controller {
             }
             counter++;
         }
+    }
+
+    public synchronized static String getMarsUrl() {
+        findChat("MarsConfig");
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException ignored) { }
+        final List<WebElement> messages = driver.findElements(By.className("_1wlJG"));
+        for (WebElement message : Lists.reverse(messages)) {
+            final WebElement messageBody = message.findElement(By.className("_1VzZY"));
+            final String text = messageBody.findElement(By.tagName("span")).getText();
+            if (text.startsWith("url:") || text.startsWith("Url:")) {
+                final String[] split = text.substring(4).trim().split("/");
+                return "http://" + split[0] + "/api/" + split[1];
+            }
+        }
+        return "";
     }
 }
