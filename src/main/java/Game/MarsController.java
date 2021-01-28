@@ -62,7 +62,7 @@ public class MarsController {
         for (Object playerObject : players) {
             JSONObject player = (JSONObject) playerObject;
             if (playerName.equals(player.get("name").toString())) {
-                return (int) player.get("actionsThisGeneration");
+                return (int) player.get("actionsThisGeneration").toString().length();
             }
         }
 
