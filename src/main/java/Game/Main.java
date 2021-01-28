@@ -35,7 +35,7 @@ public class Main {
                     }
                 },
                 0,
-                15,
+                30,
                 TimeUnit.SECONDS
         );
 

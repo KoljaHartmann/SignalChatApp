@@ -33,7 +33,7 @@ public class ChatMakros {
         Phases lastPhase = MarsController.getPhase(lastJson);
         final ArrayList<String> currentPlayers = MarsController.getActivePlayers(currentJson);
         final ArrayList<String> lastActivePlayers = MarsController.getActivePlayers(lastJson);
-        final boolean philaresInGame = MarsController.isCorporationInGame("Philares", lastJson);
+        //final boolean philaresInGame = MarsController.isCorporationInGame("Philares", lastJson);
 
         if(currentPhase.equals(DRAFTING)) {
             if (lastActivePlayers.size() > 1 && currentPlayers.size() == 1) {
@@ -57,11 +57,13 @@ public class ChatMakros {
                 }
             }
             // Falls Philares im Spiel ist und der aktuelle Spieler zwei Aktionen gemacht hat und immer noch am Zug ist: Ping!
+            /*
             if (philaresInGame) {
                 if (MarsController.getAmountOfActionsForPlayer(currentPlayers.get(0), lastJson) == 2) {
                     message = ChatMakros.getMessage(MarsController.getPlayerToCorporation("Philares", lastJson));
                 }
             }
+             */
         }
 
         if (!message.isEmpty()) {

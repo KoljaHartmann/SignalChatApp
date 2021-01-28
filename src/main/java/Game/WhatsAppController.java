@@ -92,9 +92,7 @@ public class WhatsAppController {
 
     public synchronized static String getMarsUrl() {
         findChat("MarsConfig");
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException ignored) { }
+        waitForElement(By.className("_1hRBM"));
         final List<WebElement> messages = driver.findElements(By.className("_1wlJG"));
         for (WebElement message : Lists.reverse(messages)) {
             final WebElement messageBody = message.findElement(By.className("_1VzZY"));

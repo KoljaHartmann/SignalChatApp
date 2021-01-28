@@ -56,18 +56,20 @@ public class MarsController {
         return "null";
     }
 
+    /*
     public static int getAmountOfActionsForPlayer(String playerName, JSONObject jsonObject) {
         final JSONArray players = (JSONArray) jsonObject.get("players");
 
         for (Object playerObject : players) {
             JSONObject player = (JSONObject) playerObject;
             if (playerName.equals(player.get("name").toString())) {
-                return (int) player.get("actionsThisGeneration").toString().length();
+                return player.get("actionsThisGeneration").toString().length();
             }
         }
 
         return -1;
     }
+     */
 
     public static Phases getPhase(JSONObject jsonObject) {
         final String phase = (String) jsonObject.get("phase");
