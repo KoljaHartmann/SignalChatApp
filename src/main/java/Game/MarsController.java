@@ -27,6 +27,48 @@ public class MarsController {
         return draftPlayers.size() > 0 ? draftPlayers : activePlayers;
     }
 
+    // Durchsuche das Players-JSON-Objekt nach einem Konzern
+    public static boolean isCorporationInGame(String corporation, JSONObject jsonObject) {
+        final JSONArray players = (JSONArray) jsonObject.get("players");
+
+        for (Object playerObject : players) {
+            JSONObject player = (JSONObject) playerObject;
+            if (corporation.equals(player.get("corporationCard"))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Finde den Spieler eines bestimmten Konzerns heraus
+    public static String getPlayerToCorporation(String corporation, JSONObject jsonObject) {
+        String playerName = "";
+        final JSONArray players = (JSONArray) jsonObject.get("players");
+
+        for (Object playerObject : players) {
+            JSONObject player = (JSONObject) playerObject;
+            if (corporation.equals(player.get("corporationCard"))) {
+                return (String) player.get("name");
+            }
+        }
+
+        return "null";
+    }
+
+    public static int getAmountOfActionsForPlayer(String playerName, JSONObject jsonObject) {
+        final JSONArray players = (JSONArray) jsonObject.get("players");
+
+        for (Object playerObject : players) {
+            JSONObject player = (JSONObject) playerObject;
+            if (playerName.equals(player.get("name").toString())) {
+                return (int) player.get("actionsThisGeneration").toString().length();
+            }
+        }
+
+        return -1;
+    }
+
     public static Phases getPhase(JSONObject jsonObject) {
         final String phase = (String) jsonObject.get("phase");
         return Phases.valueOf(phase.toUpperCase());
