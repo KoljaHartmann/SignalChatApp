@@ -1,6 +1,6 @@
 package Game;
 
-import com.google.common.collect.Lists;
+import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -9,11 +9,16 @@ import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 
 @SuppressWarnings("BusyWait")
-public class WhatsAppController {
+public class WebController {
 
     private static WebDriver driver;
 
@@ -52,11 +57,6 @@ public class WhatsAppController {
         }
     }
 
-    public static void close() {
-        driver.close();
-    }
-
-
     private static void findChat(String chatName) {
         waitForElement(By.xpath("//*[contains(text(), '" + chatName + "')]")).click();
     }
@@ -90,18 +90,18 @@ public class WhatsAppController {
         }
     }
 
-    public synchronized static String getMarsUrl() {
-        findChat("MarsConfig");
-        waitForElement(By.className("_1hRBM"));
-        final List<WebElement> messages = driver.findElements(By.className("_1wlJG"));
-        for (WebElement message : Lists.reverse(messages)) {
-            final WebElement messageBody = message.findElement(By.className("_1VzZY"));
-            final String text = messageBody.findElement(By.tagName("span")).getText();
-            if (text.startsWith("url:") || text.startsWith("Url:")) {
-                final String[] split = text.substring(4).trim().split("/");
-                return "http://" + split[0] + "/api/" + split[1];
+    public static JSONObject readMarsJson(String url) {
+        try (InputStream is = new URL(url).openStream()) {
+            BufferedReader rd = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            int cp;
+            while ((cp = rd.read()) != -1) {
+                sb.append((char) cp);
             }
+            return new JSONObject(sb.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return "";
+        return new JSONObject();
     }
 }
