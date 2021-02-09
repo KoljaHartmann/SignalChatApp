@@ -10,19 +10,16 @@ public class Main {
     //TODO npe bei path var catchen
     //TODO nur jar übertragen
     //TODO headless als property
-
     //TODO echter ping
-    //TODO final greenery
-    //TODO initial buy
 
-    private static final String MARS_URL = "http://168.119.225.172:8080/api/player?id=f814f3933fc2";
+    private static final String MARS_URL = "http://168.119.225.172:8080/api/player?id=2467ed5435af";
+    private static final boolean headless = true;
 
     private static JSONObject lastJson;
 
     public static void main(String [ ] args) {
         System.out.println("Starting Chatbot");
-        WebController.connectToWhatsapp();
-
+        WebController.connectToWhatsapp(headless);
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
             () -> {
                 System.out.println(MARS_URL);
