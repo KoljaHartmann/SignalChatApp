@@ -1,6 +1,9 @@
 package Game;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Random;
 
 public class ChatMacros {
 
@@ -16,6 +19,17 @@ public class ChatMacros {
             "Dart Vader","Kolja"
     );
 
+    private static final ArrayList<String> cardQuotes = new ArrayList<String>(
+            Arrays.asList(
+                        "Karten oder 'n Stück Holz!",
+                        "Karte her, sonst Taschen leer!",
+                        "Kauf deine verdammten Karten!",
+                        "Weniger Eierschaukeln, mehr Karten kaufen!",
+                        "Nur die Karten kommen in' Garten!",
+                        "Niemand hat die Absicht, für dich deine Karten zu kaufen!",
+                        "Dies sind keine Fake News!"
+            ));
+
     public static String getPlayerName(String player) {
         final String name = playerNames.get(player);
         return name != null ? name : player;
@@ -27,7 +41,7 @@ public class ChatMacros {
 
     public static String getResearchMessage() { return "Ping @all. Please buy your cards!"; }
 
-    public static String getResearchMessage(String player) { return "Ping @" + getPlayerName(player) + ". Kauf deine verdammten Karten!"; }
+    public static String getResearchMessage(String player) { Random rand = new Random(); return "Ping @" + getPlayerName(player) + ". " + cardQuotes.get(rand.nextInt(cardQuotes.size())); }
 
     public static String finalGreeneryPing(String player) { return "Ping @" + getPlayerName(player) + ", place your final Greenery"; }
 }
