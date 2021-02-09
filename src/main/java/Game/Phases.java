@@ -4,7 +4,8 @@ public enum  Phases {
 
     DRAFTING,
     RESEARCH,
-    ACTION;
+    ACTION,
+    PRODUCTION;
 
     @Override
     public String toString() {
