@@ -15,6 +15,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 @SuppressWarnings("BusyWait")
@@ -22,10 +25,12 @@ public class WebController {
 
     private static WebDriver driver;
 
-    public synchronized static void connectToWhatsapp() {
+    public synchronized static void connectToWhatsapp(boolean headless) {
         System.out.println("trying to connect to WhatsApp");
         FirefoxBinary firefoxBinary = new FirefoxBinary();
-        firefoxBinary.addCommandLineOptions("--headless");
+        if (headless) {
+            firefoxBinary.addCommandLineOptions("--headless");
+        }
         System.setProperty("webdriver.gecko.driver", System.getenv("FIREFOX_PATH"));
         FirefoxOptions firefoxOptions = new FirefoxOptions();
         firefoxOptions.setBinary(firefoxBinary);
@@ -61,11 +66,31 @@ public class WebController {
         waitForElement(By.xpath("//*[contains(text(), '" + chatName + "')]")).click();
     }
 
-    public synchronized static void sendWhatsAppMessage(String message) {
+    public synchronized static void sendWhatsAppMessage(String message) throws InterruptedException {
         findChat("e-Spirit & Associates");
         final WebElement parent = waitForElement(By.className("_1hRBM"));
         final WebElement textField = parent.findElement(By.className("_1awRl"));
-        textField.sendKeys(message);
+
+        final String[] split = message.split("@[^\\s]*");
+        Matcher matcher = Pattern.compile("@(?<culprit>[^\\s]*)").matcher(message);
+
+        textField.sendKeys(split[0]);
+        int hits = 0;
+        while(matcher.find()) {
+            hits++;
+            textField.sendKeys("@" + matcher.group("culprit"));
+            Thread.sleep(100);
+            final WebElement pingList = driver.findElement(By.className("_2wjQC"));
+            try {
+                final WebElement culprit = pingList.findElement(By.xpath(".//*[contains(text(), '" + matcher.group("culprit") + "')]"));
+                culprit.click();
+            } catch (NoSuchElementException e) {
+                System.out.println("Could not find player " + matcher.group("culprit") + " to ping.");
+            }
+            if (split.length > hits) {
+                textField.sendKeys(split[hits]);
+            }
+        }
         waitForElement(By.className("_2Ujuu")).click();
     }
 
@@ -78,8 +103,8 @@ public class WebController {
                 return element;
             } catch (NoSuchElementException e) {
                 System.out.println("did not found " + searchQuery.toString() + ". counter is " + counter);
-                if (counter > 50) {
-                    System.out.println("I give up!");
+                if (counter > 20) {
+                    System.out.println("I give up after " + counter + " tries!");
                     throw e;
                 }
                 try {

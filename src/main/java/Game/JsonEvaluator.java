@@ -10,7 +10,7 @@ import static Game.Phases.RESEARCH;
 
 public class JsonEvaluator {
 
-    public static void evaluateSendingMessage(JSONObject lastJson, JSONObject currentJson) {
+    public static void evaluateSendingMessage(JSONObject lastJson, JSONObject currentJson) throws InterruptedException {
         String message = "";
         Phases currentPhase = getPhase(currentJson);
         Phases lastPhase = getPhase(lastJson);
@@ -27,7 +27,7 @@ public class JsonEvaluator {
             if (lastPhase != null && !lastPhase.equals(RESEARCH)) {
                 message = ChatMacros.getResearchMessage();
             } else if (lastActivePlayers.size() > 1 && currentPlayers.size() == 1) {
-                message = ChatMacros.getSimplePing(currentPlayers.get(0));
+                message = ChatMacros.getResearchMessage(currentPlayers.get(0));
             }
         } else if (currentPhase.equals(ACTION)){
             if (lastPhase.equals(RESEARCH)) {
@@ -46,7 +46,6 @@ public class JsonEvaluator {
                 }
             }
         }
-
         if (!message.isEmpty()) {
             WebController.sendWhatsAppMessage(message);
         }

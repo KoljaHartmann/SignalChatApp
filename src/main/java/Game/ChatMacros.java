@@ -27,5 +27,7 @@ public class ChatMacros {
 
     public static String getResearchMessage() { return "Ping @all. Please buy your cards!"; }
 
+    public static String getResearchMessage(String player) { return "Ping @" + getPlayerName(player) + ". Kauf deine verdammten Karten!"; }
+
     public static String finalGreeneryPing(String player) { return "Ping @" + getPlayerName(player) + ", place your final Greenery"; }
 }
