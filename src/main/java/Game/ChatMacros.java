@@ -41,7 +41,10 @@ public class ChatMacros {
 
     public static String getResearchMessage() { return "Ping @all. Please buy your cards!"; }
 
-    public static String getResearchMessage(String player) { Random rand = new Random(); return "Ping @" + getPlayerName(player) + ". " + cardQuotes.get(rand.nextInt(cardQuotes.size())); }
+    public static String getResearchMessage(String player) {
+        Random rand = new Random();
+        return "Ping @" + getPlayerName(player) + ". " + cardQuotes.get(rand.nextInt(cardQuotes.size()));
+    }
 
     public static String finalGreeneryPing(String player) { return "Ping @" + getPlayerName(player) + ", place your final Greenery"; }
 }

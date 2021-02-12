@@ -10,7 +10,7 @@ public class Main {
     //TODO npe bei path var catchen
     //TODO nur jar übertragen
     //TODO headless als property
-    //TODO echter ping
+    //TODO qr code in console
 
     private static final String MARS_URL = "http://168.119.225.172:8080/api/player?id=2467ed5435af";
     private static final boolean headless = true;
