@@ -27,7 +27,7 @@ public class JsonEvaluator {
             if (lastPhase != null && !lastPhase.equals(RESEARCH)) {
                 message = ChatMacros.getResearchMessage();
             } else if (lastActivePlayers.size() > 1 && currentPlayers.size() == 1) {
-                message = ChatMacros.getResearchMessage(currentPlayers.get(0));
+                message = ChatMacros.getResearchPing(currentPlayers.get(0));
             }
         } else if (currentPhase.equals(ACTION)){
             if (lastPhase.equals(RESEARCH)) {
