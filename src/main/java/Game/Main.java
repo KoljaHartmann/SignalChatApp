@@ -12,7 +12,7 @@ public class Main {
     //TODO headless als property
     //TODO qr code in console
 
-    private static final String MARS_URL = "http://168.119.225.172:8080/api/player?id=2467ed5435af";
+    private static final String MARS_URL = "http://168.119.225.172:8080/api/player?id=bea8022b997a";
     private static final boolean headless = true;
 
     private static JSONObject lastJson;

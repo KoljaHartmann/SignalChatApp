@@ -33,7 +33,7 @@ public class ChatMacros {
 
     private static final ArrayList<String> draftMessageList = new ArrayList<>(
             Arrays.asList(
-                    "Ping @all. Please buy your cards!",
+                    "Ping @all. It's drafting time!",
                     "Dröft"
             ));
 
