@@ -38,7 +38,7 @@ public class JsonEvaluator {
                 }
             }
         } else if (currentPhase.equals(PRODUCTION)) {
-            if (lastPhase != null && !lastPhase.equals(RESEARCH)) {
+            if (lastPhase != null && !lastPhase.equals(PRODUCTION)) {
                 message = ChatMacros.finalGreeneryPing(currentPlayers.get(0));
             } else if (currentPlayers.size() == 1 && lastActivePlayers.size() > 0) {
                 if (!currentPlayers.get(0).equals(lastActivePlayers.get(0))) {
