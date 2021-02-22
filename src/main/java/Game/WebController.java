@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,6 +61,7 @@ public class WebController {
         }
     }
 
+    @SuppressWarnings("SameParameterValue")
     private static void findChat(String chatName) {
         waitForElement(By.xpath("//*[contains(text(), '" + chatName + "')]")).click();
     }
@@ -71,8 +71,8 @@ public class WebController {
         final WebElement parent = waitForElement(By.className("_1hRBM"));
         final WebElement textField = parent.findElement(By.className("_1awRl"));
 
-        final String[] split = message.split("@[^\\s]*");
-        Matcher matcher = Pattern.compile("@(?<culprit>[^\\s]*)").matcher(message);
+        final String[] split = message.split("@[^\\s.!,]*");
+        Matcher matcher = Pattern.compile("@(?<culprit>[^\\s.!,]*)").matcher(message);
 
         textField.sendKeys(split[0]);
         int hits = 0;
@@ -84,6 +84,7 @@ public class WebController {
             try {
                 final WebElement culprit = pingList.findElement(By.xpath(".//*[contains(text(), '" + matcher.group("culprit") + "')]"));
                 culprit.click();
+                textField.sendKeys("\b");
             } catch (NoSuchElementException e) {
                 System.out.println("Could not find player " + matcher.group("culprit") + " to ping.");
             }

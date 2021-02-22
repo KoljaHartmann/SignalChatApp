@@ -27,7 +27,7 @@ public class JsonEvaluator {
             if (lastPhase != null && !lastPhase.equals(RESEARCH)) {
                 message = ChatMacros.getResearchMessage();
             } else if (lastActivePlayers.size() > 1 && currentPlayers.size() == 1) {
-                message = ChatMacros.getResearchMessage(currentPlayers.get(0));
+                message = ChatMacros.getResearchPing(currentPlayers.get(0));
             }
         } else if (currentPhase.equals(ACTION)){
             if (lastPhase.equals(RESEARCH)) {
@@ -38,7 +38,7 @@ public class JsonEvaluator {
                 }
             }
         } else if (currentPhase.equals(PRODUCTION)) {
-            if (lastPhase != null && !lastPhase.equals(RESEARCH)) {
+            if (lastPhase != null && !lastPhase.equals(PRODUCTION)) {
                 message = ChatMacros.finalGreeneryPing(currentPlayers.get(0));
             } else if (currentPlayers.size() == 1 && lastActivePlayers.size() > 0) {
                 if (!currentPlayers.get(0).equals(lastActivePlayers.get(0))) {
