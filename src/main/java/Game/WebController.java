@@ -84,7 +84,6 @@ public class WebController {
             try {
                 final WebElement culprit = pingList.findElement(By.xpath(".//*[contains(text(), '" + matcher.group("culprit") + "')]"));
                 culprit.click();
-                textField.sendKeys("\b");
             } catch (NoSuchElementException e) {
                 System.out.println("Could not find player " + matcher.group("culprit") + " to ping.");
             }
