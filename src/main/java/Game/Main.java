@@ -7,8 +7,6 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
     //TODO MARS_URL als property
-    //TODO npe bei path var catchen
-    //TODO nur jar übertragen
     //TODO headless als property
     //TODO qr code in console
 

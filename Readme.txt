@@ -1,5 +1,7 @@
 ssh root@49.12.65.107
 
+ps aux | grep java
+
 copy file to server
 scp C:\Users\hartmann\Downloads\geckodriver-v0.28.0-linux64.tar.gz root@49.12.65.107:.\gecko\
 scp C:\Users\hartmann\Desktop\Sammelbecken\MarsChatBot\target\chatbot-1.1.4.jar root@49.12.65.107:.\mars\
@@ -7,7 +9,7 @@ scp C:\Users\hartmann\Desktop\Sammelbecken\MarsChatBot\target\chatbot-1.1.4.jar 
 copy folder to server
 scp -r C:\Users\hartmann\Desktop\Sammelbecken\MarsChatBot\target\ root@49.12.65.107:.\mars\
 
-ps aux | grep java
+
 
 tmux
 strg+b dann d

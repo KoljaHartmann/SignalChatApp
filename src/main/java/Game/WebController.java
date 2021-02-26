@@ -44,7 +44,7 @@ public class WebController {
         String dataRef = "";
         while (true) {
             try {
-                final WebElement divContainingCode = driver.findElement(By.className("_1yHR2"));
+                final WebElement divContainingCode = driver.findElement(By.className("_3jid7"));
                 String attribute = divContainingCode.getAttribute("data-ref");
                 if (attribute != null && !attribute.equals(dataRef)) {
                     System.out.println(attribute);
@@ -68,8 +68,8 @@ public class WebController {
 
     public synchronized static void sendWhatsAppMessage(String message) throws InterruptedException {
         findChat("e-Spirit & Associates");
-        final WebElement parent = waitForElement(By.className("_1hRBM"));
-        final WebElement textField = parent.findElement(By.className("_1awRl"));
+        final WebElement parent = waitForElement(By.className("_2x4bz"));
+        final WebElement textField = parent.findElement(By.className("_2_1wd"));
 
         final String[] split = message.split("@[^\\s.!,]*");
         Matcher matcher = Pattern.compile("@(?<culprit>[^\\s.!,]*)").matcher(message);
@@ -80,7 +80,7 @@ public class WebController {
             hits++;
             textField.sendKeys("@" + matcher.group("culprit"));
             Thread.sleep(100);
-            final WebElement pingList = driver.findElement(By.className("_2wjQC"));
+            final WebElement pingList = driver.findElement(By.className("_1p9lF"));
             try {
                 final WebElement culprit = pingList.findElement(By.xpath(".//*[contains(text(), '" + matcher.group("culprit") + "')]"));
                 culprit.click();
@@ -91,7 +91,7 @@ public class WebController {
                 textField.sendKeys(split[hits]);
             }
         }
-        waitForElement(By.className("_2Ujuu")).click();
+        waitForElement(By.className("_1E0Oz")).click();
     }
 
     private static WebElement waitForElement(By searchQuery) {
