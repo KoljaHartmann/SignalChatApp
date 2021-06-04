@@ -67,7 +67,8 @@ public class JsonEvaluator {
     }
 
     public static Phases getPhase(JSONObject jsonObject) {
-        final String phase = (String) jsonObject.get("phase");
+        final JSONObject game = (JSONObject) jsonObject.get("game");
+        final String phase = (String) game.get("phase");
         return Phases.valueOf(phase.toUpperCase());
     }
 
