@@ -6,7 +6,7 @@
 
     <groupId>mars</groupId>
     <artifactId>chatbot</artifactId>
-    <version>1.1.5</version>
+    <version>1.2.0</version>
     <build>
         <plugins>
             <plugin>

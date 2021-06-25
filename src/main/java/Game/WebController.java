@@ -15,14 +15,18 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-
-@SuppressWarnings("BusyWait")
 public class WebController {
 
     private static WebDriver driver;
+
+    private static final String MESSAGE_CONTAINER = "_3ExzF";
+    private static final String SEND_MESSAGE = "_1E0Oz";
+    private static final String CHAT_FIELD_PARENT = "_2x4bz";
+    private static final String CHAT_FIELD = "_2_1wd";
 
     public synchronized static void connectToWhatsapp(boolean headless) {
         System.out.println("trying to connect to WhatsApp");
@@ -61,15 +65,10 @@ public class WebController {
         }
     }
 
-    @SuppressWarnings("SameParameterValue")
-    private static void findChat(String chatName) {
-        waitForElement(By.xpath("//*[contains(text(), '" + chatName + "')]")).click();
-    }
-
     public synchronized static void sendWhatsAppMessage(String message) throws InterruptedException {
-        findChat("e-Spirit & Associates");
-        final WebElement parent = waitForElement(By.className("_2x4bz"));
-        final WebElement textField = parent.findElement(By.className("_2_1wd"));
+        waitForElement(By.xpath("//*[contains(text(), 'e-Spirit & Associates')]")).click();
+        final WebElement parent = waitForElement(By.className(CHAT_FIELD_PARENT));
+        final WebElement textField = parent.findElement(By.className(CHAT_FIELD));
 
         final String[] split = message.split("@[^\\s.!,]*");
         Matcher matcher = Pattern.compile("@(?<culprit>[^\\s.!,]*)").matcher(message);
@@ -91,7 +90,7 @@ public class WebController {
                 textField.sendKeys(split[hits]);
             }
         }
-        waitForElement(By.className("_1E0Oz")).click();
+        waitForElement(By.className(SEND_MESSAGE)).click();
     }
 
     private static WebElement waitForElement(By searchQuery) {
@@ -128,5 +127,37 @@ public class WebController {
             e.printStackTrace();
         }
         return new JSONObject();
+    }
+
+    public synchronized static String readConfigUrl() {
+        String url = getUrlMessage();
+        if (url.startsWith("http")) {
+            if (url.contains("/api/")) {
+                return url;
+            } else {
+                final String[] split = url.split("/player");
+                if (split.length == 2) {
+                    return split[0] + "/api/player" + split[1];
+                } else {
+                    throw new RuntimeException("Unexpected url! " + url);
+                }
+            }
+        }
+        return null;
+    }
+
+    private static String getUrlMessage() {
+        try {
+            driver.findElement(By.xpath("//*[contains(text(), 'MarsConfig')]")).click();
+            Thread.sleep(100);
+            final List<WebElement> messages = driver.findElements(By.className(MESSAGE_CONTAINER));
+            final WebElement latestMessage = messages.get(messages.size() - 1);
+            final WebElement urlField = latestMessage.findElement(By.xpath(".//*[contains(text(), 'url')]"));
+            final String urlConfig = urlField.getText();
+            return urlConfig.replaceFirst("url:*", "");
+        } catch (Exception ignored) {
+            System.out.println("No new url found");
+        }
+        return "";
     }
 }

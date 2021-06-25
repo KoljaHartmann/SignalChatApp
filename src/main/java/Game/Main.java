@@ -10,7 +10,7 @@ public class Main {
     //TODO headless als property
     //TODO qr code in console
 
-    private static final String MARS_URL = "http://168.119.225.172:8080/api/player?id=bdc6d64e83ba";
+    private static String marsUrl = "";
     private static final boolean headless = true;
 
     private static JSONObject lastJson;
@@ -20,10 +20,10 @@ public class Main {
         WebController.connectToWhatsapp(headless);
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
             () -> {
-                System.out.println(MARS_URL);
+                System.out.println(marsUrl);
                 JSONObject currentJson = null;
                 try {
-                    currentJson = WebController.readMarsJson(MARS_URL);
+                    currentJson = WebController.readMarsJson(marsUrl);
                     if (lastJson == null || lastJson.isEmpty()) {
                         System.out.println("First call to Mars");
                     } else {
@@ -40,6 +40,24 @@ public class Main {
             50,
             1500,
             TimeUnit.MILLISECONDS
+        );
+
+        Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
+                () -> {
+                    System.out.println("Looking for new config");
+                    try {
+                        String apiUrl = WebController.readConfigUrl();
+                        if (apiUrl != null && !marsUrl.equals(apiUrl)) {
+                            System.out.println("New url! " + apiUrl);
+                            marsUrl = apiUrl;
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Issues looking for config: " + e.getMessage());
+                    }
+                },
+                3,
+                30,
+                TimeUnit.SECONDS
         );
     }
 }
