@@ -24,7 +24,9 @@ public class Main {
                 JSONObject currentJson = null;
                 try {
                     currentJson = WebController.readMarsJson(marsUrl);
-                    if (lastJson == null || lastJson.isEmpty()) {
+                    if (currentJson == null) {
+                        System.out.println("No Json found");
+                    } else if (lastJson == null || lastJson.isEmpty()) {
                         System.out.println("First call to Mars");
                     } else {
                         System.out.println("Phase: " + JsonEvaluator.getPhase(currentJson) + ",  lastActivePlayers: " + JsonEvaluator.getActivePlayers(lastJson) + " currentPlayers: " + JsonEvaluator.getActivePlayers(currentJson));
@@ -34,6 +36,7 @@ public class Main {
                 } catch (Exception e) {
                     System.out.println("lastJson: " + lastJson);
                     System.out.println("currentJson" + currentJson);
+                    lastJson = currentJson;
                     System.out.println(e.getMessage());
                 }
             },

@@ -23,10 +23,12 @@ public class WebController {
 
     private static WebDriver driver;
 
-    private static final String MESSAGE_CONTAINER = "_3ExzF";
-    private static final String SEND_MESSAGE = "_1E0Oz";
-    private static final String CHAT_FIELD_PARENT = "_2x4bz";
-    private static final String CHAT_FIELD = "_2_1wd";
+    private static final String CHAT_FIELD_PARENT = "_1LbR4";
+    private static final String CHAT_FIELD = "_13NKt";
+    private static final String SEND_MESSAGE = "_4sWnG";
+    private static final String PING_LIST = "_3lPuS";
+    private static final String MESSAGE_CONTAINER = "_1Gy50";
+    private static final String QR_CODE_FIELD = "_2UwZ_";
 
     public synchronized static void connectToWhatsapp(boolean headless) {
         System.out.println("trying to connect to WhatsApp");
@@ -48,7 +50,7 @@ public class WebController {
         String dataRef = "";
         while (true) {
             try {
-                final WebElement divContainingCode = driver.findElement(By.className("_3jid7"));
+                final WebElement divContainingCode = driver.findElement(By.className(QR_CODE_FIELD));
                 String attribute = divContainingCode.getAttribute("data-ref");
                 if (attribute != null && !attribute.equals(dataRef)) {
                     System.out.println(attribute);
@@ -78,9 +80,9 @@ public class WebController {
         while(matcher.find()) {
             hits++;
             textField.sendKeys("@" + matcher.group("culprit"));
-            Thread.sleep(100);
-            final WebElement pingList = driver.findElement(By.className("_1p9lF"));
             try {
+                Thread.sleep(100);
+                final WebElement pingList = driver.findElement(By.className(PING_LIST));
                 final WebElement culprit = pingList.findElement(By.xpath(".//*[contains(text(), '" + matcher.group("culprit") + "')]"));
                 culprit.click();
             } catch (NoSuchElementException e) {
@@ -115,6 +117,10 @@ public class WebController {
     }
 
     public static JSONObject readMarsJson(String url) {
+        if (url == null || url.isEmpty()) {
+            System.out.println("No url configured");
+            return null;
+        }
         try (InputStream is = new URL(url).openStream()) {
             BufferedReader rd = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
             StringBuilder sb = new StringBuilder();
@@ -124,6 +130,7 @@ public class WebController {
             }
             return new JSONObject(sb.toString());
         } catch (IOException e) {
+            System.out.println("Problems reading JSON from " + url);
             e.printStackTrace();
         }
         return new JSONObject();
