@@ -67,7 +67,7 @@ public class WebController {
         }
     }
 
-    public synchronized static void sendWhatsAppMessage(String message) throws InterruptedException {
+    public synchronized static void sendMessage(String message) throws InterruptedException {
         waitForElement(By.xpath("//*[contains(text(), 'e-Spirit & Associates')]")).click();
         final WebElement parent = waitForElement(By.className(CHAT_FIELD_PARENT));
         final WebElement textField = parent.findElement(By.className(CHAT_FIELD));

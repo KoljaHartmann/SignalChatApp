@@ -1,7 +1,7 @@
 package Game;
 
 public class SignalController {
-    public static void sendWhatsAppMessage(String message) {
+    public static void sendMessage(String message) {
         //TODO
     }
 
