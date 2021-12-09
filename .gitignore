@@ -1,4 +1,4 @@
 .idea
 .idea/vcs.xml
 target/
-.iml
+*.iml
