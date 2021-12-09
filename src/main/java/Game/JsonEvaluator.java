@@ -47,7 +47,7 @@ public class JsonEvaluator {
             }
         }
         if (!message.isEmpty()) {
-            WebController.sendWhatsAppMessage(message);
+            SignalController.sendWhatsAppMessage(message);
         }
     }
 

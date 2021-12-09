@@ -7,23 +7,21 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
     //TODO MARS_URL als property
-    //TODO headless als property
-    //TODO qr code in console
+    //TODO Game.Phases.INITIAL_DRAFTING
 
-    private static String marsUrl = "";
-    private static final boolean headless = true;
+    private static String marsUrl = "http://168.119.225.172:8080/api/player?id=p663efe368aac";
 
     private static JSONObject lastJson;
 
     public static void main(String [ ] args) {
         System.out.println("Starting Chatbot");
-        WebController.connectToWhatsapp(headless);
+        SignalController.connect();
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
             () -> {
                 System.out.println(marsUrl);
                 JSONObject currentJson = null;
                 try {
-                    currentJson = WebController.readMarsJson(marsUrl);
+                    currentJson = MarsController.readMarsJson(marsUrl);
                     if (currentJson == null) {
                         System.out.println("No Json found");
                     } else if (lastJson == null || lastJson.isEmpty()) {
@@ -43,24 +41,6 @@ public class Main {
             50,
             1500,
             TimeUnit.MILLISECONDS
-        );
-
-        Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
-                () -> {
-                    System.out.println("Looking for new config");
-                    try {
-                        String apiUrl = WebController.readConfigUrl();
-                        if (apiUrl != null && !marsUrl.equals(apiUrl)) {
-                            System.out.println("New url! " + apiUrl);
-                            marsUrl = apiUrl;
-                        }
-                    } catch (Exception e) {
-                        System.out.println("Issues looking for config: " + e.getMessage());
-                    }
-                },
-                3,
-                30,
-                TimeUnit.SECONDS
         );
     }
 }
