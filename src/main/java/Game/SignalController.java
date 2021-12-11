@@ -37,7 +37,7 @@ public class SignalController {
     }
 
     synchronized public static void receiveMessages() {
-        System.out.println("Keepalive, receiving messages");
+        System.out.println("receiving messages");
 
         GlobalConfig globalConfig = GlobalConfig.getInstance();
         if (globalConfig.getSignalCliPath() != null
@@ -46,7 +46,6 @@ public class SignalController {
             String command = String.format("%s -u %s receive",
                     globalConfig.getSignalCliPath(),
                     globalConfig.getSignalUsername());
-
 
             try {
                 Process proc = Runtime.getRuntime().exec(command);
