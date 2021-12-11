@@ -1,22 +1,33 @@
 package Game;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class GlobalConfig {
 
     private final static String SIGNAL_USERNAME_ENV = "SIGNAL_USERNAME";
-    private final static String SIGNAL_TARGET_USERNAME_ENV = "SIGNAL_TARGET_USERNAME";
-    private final static String SIGNAL_CONFIG_USERNAME_ENV = "SIGNAL_CONFIG_USERNAME";
+    private final static String SIGNAL_SEND_GROUP_ENV = "SIGNAL_SEND_GROUP";
+    private final static String SIGNAL_CONFIG_GROUP_ENV = "SIGNAL_CONFIG_GROUP";
+    private final static String SIGNAL_CLI_PATH_ENV = "SIGNAL_CLI_PATH";
+
     private static GlobalConfig instance;
-    private String marsUrl;
+
+    private String gameUrl;
     private String signalUsername;
-    private String signalTargetUsername;
-    private String signalConfigUsername;
+    private String signalSendGroup;
+    private String signalConfigGroup;
+    private String signalCliPath;
+
+    private Lock lock;
 
     private GlobalConfig() {
-        this.marsUrl = "";
+        this.gameUrl = "";
         this.signalUsername = System.getenv(SIGNAL_USERNAME_ENV);
-        this.signalTargetUsername = System.getenv(SIGNAL_TARGET_USERNAME_ENV);
-        this.signalConfigUsername = System.getenv(SIGNAL_CONFIG_USERNAME_ENV);
-        System.out.println();
+        this.signalSendGroup = System.getenv(SIGNAL_SEND_GROUP_ENV);
+        this.signalConfigGroup = System.getenv(SIGNAL_CONFIG_GROUP_ENV);
+        this.signalCliPath = System.getenv(SIGNAL_CLI_PATH_ENV);
+        System.out.println("Config Created: \n" + this);
+        this.lock = new ReentrantLock();
     }
 
     public static GlobalConfig getInstance() {
@@ -26,20 +37,20 @@ public class GlobalConfig {
         return instance;
     }
 
-    public String getMarsUrl() {
-        return marsUrl;
+    public String getGameUrl() {
+        return gameUrl;
     }
 
-    public void setMarsUrl(String marsUrl) {
-        this.marsUrl = marsUrl;
+    public void setGameUrl(String gameUrl) {
+        this.gameUrl = gameUrl;
     }
 
-    public String getSignalTargetUsername() {
-        return signalTargetUsername;
+    public String getSignalSendGroup() {
+        return signalSendGroup;
     }
 
-    public void setSignalTargetUsername(String signalTargetUsername) {
-        this.signalTargetUsername = signalTargetUsername;
+    public void setSignalSendGroup(String signalSendGroup) {
+        this.signalSendGroup = signalSendGroup;
     }
 
     public String getSignalUsername() {
@@ -50,12 +61,20 @@ public class GlobalConfig {
         this.signalUsername = signalUsername;
     }
 
-    public String getSignalConfigUsername() {
-        return signalConfigUsername;
+    public String getSignalConfigGroup() {
+        return signalConfigGroup;
     }
 
-    public void setSignalConfigUsername(String signalConfigUsername) {
-        this.signalConfigUsername = signalConfigUsername;
+    public void setSignalConfigGroup(String signalConfigGroup) {
+        this.signalConfigGroup = signalConfigGroup;
+    }
+
+    public String getSignalCliPath() {
+        return signalCliPath;
+    }
+
+    public void setSignalCliPath(String signalCliPath) {
+        this.signalCliPath = signalCliPath;
     }
 
     public String toString() {
@@ -63,6 +82,10 @@ public class GlobalConfig {
                 "\n\t URL: [%s]" +
                 "\n\t Signal Username [%s]" +
                 "\n\t Signal Target [%s]" +
-                "\n\t Signal Config [%s]", marsUrl, signalUsername, signalTargetUsername, signalConfigUsername);
+                "\n\t Signal Config [%s]", gameUrl, signalUsername, signalSendGroup, signalConfigGroup);
+    }
+
+    public Lock getLock() {
+        return lock;
     }
 }
