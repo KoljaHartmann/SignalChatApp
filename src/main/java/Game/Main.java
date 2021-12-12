@@ -19,14 +19,7 @@ public class Main {
 
         SignalController.connect();
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
-                () -> {
-                    globalConfig.getLock().lock();
-                    try {
-                        SignalController.receiveMessages();
-                    } finally {
-                        globalConfig.getLock().unlock();
-                    }
-                }, 0, 20, TimeUnit.SECONDS
+                SignalController::receiveMessages, 0, 20, TimeUnit.SECONDS
         );
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
                 () -> {

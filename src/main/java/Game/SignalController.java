@@ -56,7 +56,6 @@ public class SignalController {
                         InputStreamReader(proc.getErrorStream()));
 
                 // Read the output from the command
-                System.out.println("Here is the standard output of the command:\n");
                 String line = null;
                 String groupId = null;
                 String body = null;
@@ -99,25 +98,29 @@ public class SignalController {
 
     static private void handleIncomingMessage(String groupId, String body) {
         GlobalConfig globalConfig = GlobalConfig.getInstance();
+        globalConfig.getLock().lock();
+        try {
+            if (groupId != null && body != null && groupId.equals(globalConfig.getSignalConfigGroup())) {
+                String[] bodyParts = body.trim().split(" ");
+                if (bodyParts.length == 2) {
+                    String command = bodyParts[0].trim();
+                    String parameter = bodyParts[1].trim();
 
-        if (groupId != null && body != null && groupId.equals(globalConfig.getSignalConfigGroup())) {
-            String[] bodyParts = body.trim().split(" ");
-            if (bodyParts.length == 2) {
-                String command = bodyParts[0].trim();
-                String parameter = bodyParts[1].trim();
-
-                switch (command) {
-                    case "setGameUrl":
-                        System.out.println("setting GameUrl to [" + parameter + "]");
-                        globalConfig.setGameUrl(parameter);
-                        break;
-                    default:
-                        System.out.println("ERROR: unknown Command [" + command + "] parameter: [" + parameter + "]");
+                    switch (command) {
+                        case "setGameUrl":
+                            System.out.println("setting GameUrl to [" + parameter + "]");
+                            globalConfig.setGameUrl(parameter);
+                            break;
+                        default:
+                            System.out.println("ERROR: unknown Command [" + command + "] parameter: [" + parameter + "]");
+                    }
+                } else {
+                    System.out.println("Unable to handle message, too many parts: " + body);
                 }
-            } else {
-                System.out.println("Unable to handle message, too many parts: " + body);
-            }
 
+            }
+        } finally {
+            globalConfig.getLock().unlock();
         }
 
     }
