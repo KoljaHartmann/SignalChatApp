@@ -28,7 +28,11 @@ The app is configured by Env Variables that are read on startup.
 ### optional 
 - SIGNAL_CONFIG_GROUP
   - e.g. ```jUBrrj4...F6U\=```
+- TM_GAME_URL
+  - e.g. ```http://...```
 
+## usage of config Groups
+you can send commands to the config group
 Commands consist of 2 parts, seperated by a single space:
 ```[commandName] [parameter]```
 

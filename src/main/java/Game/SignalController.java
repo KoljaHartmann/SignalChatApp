@@ -32,8 +32,26 @@ public class SignalController {
     }
 
     public static void connect() {
-        System.out.println("connect");
-        //TODO
+        System.out.println("connect, attempt accepting configured group invitations");
+
+        GlobalConfig globalConfig = GlobalConfig.getInstance();
+
+        String baseCommand = String.format("%s -u %s updateGroup -g ",
+                globalConfig.getSignalCliPath(),
+                globalConfig.getSignalUsername());
+
+        try {
+            if(globalConfig.getSignalConfigGroup() != null && !globalConfig.getSignalConfigGroup().isEmpty()) {
+                Runtime.getRuntime().exec(baseCommand + globalConfig.getSignalConfigGroup());
+            }
+            if(globalConfig.getSignalSendGroup() != null && !globalConfig.getSignalSendGroup().isEmpty()) {
+                Runtime.getRuntime().exec(baseCommand + globalConfig.getSignalSendGroup());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     synchronized public static void receiveMessages() {
