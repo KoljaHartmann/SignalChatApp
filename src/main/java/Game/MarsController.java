@@ -24,7 +24,7 @@ public class MarsController {
                 sb.append((char) cp);
             }
             return new JSONObject(sb.toString());
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("Problems reading JSON from " + url);
             e.printStackTrace();
         }

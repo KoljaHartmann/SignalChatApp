@@ -1,10 +1,10 @@
-ssh root@49.12.65.107
+ssh root@49.12.223.0
 
 ps aux | grep java
 
 copy file to server
-scp C:\Users\hartmann\Downloads\geckodriver-v0.28.0-linux64.tar.gz root@49.12.65.107:.\gecko\
-scp C:\Users\hartmann\Desktop\Sammelbecken\MarsChatBot\target\chatbot-1.2.2.jar root@49.12.65.107:.\mars\
+scp C:\Users\Laura\Downloads\signal-cli-0.10.0.tar.gz root@49.12.223.0:.\signal\
+scp C:\Users\Laura\Entwicklung\MarsChatBot\target\chatbot-2.0.0-jar-with-dependencies.jar root@49.12.223.0:.\mars\
 
 copy folder to server
 scp -r C:\Users\hartmann\Desktop\Sammelbecken\MarsChatBot\target\ root@49.12.65.107:.\mars\
@@ -21,7 +21,7 @@ The app is configured by Env Variables that are read on startup.
 - SIGNAL_USERNAME
   - eg ```+4911111111```
 - SIGNAL_CLI_PATH
-  - e.g. ```wsl ~/signal-cli/signal-cli-0.9.2/bin/signal-cli```
+  - e.g. ```wsl ~/signal-cli/signal-cli-0.10.0/bin/signal-cli```
 - SIGNAL_SEND_GROUP
   - e.g. ```jUBrrj4YVbGdz...F6U\=```
   

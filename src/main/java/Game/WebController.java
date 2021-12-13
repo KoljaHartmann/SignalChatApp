@@ -1,5 +1,6 @@
 package Game;
 
+/*
 import org.json.JSONObject;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
@@ -19,7 +20,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+ */
+
 public class WebController {
+
+    /*
 
     private static WebDriver driver;
 
@@ -167,4 +172,6 @@ public class WebController {
         }
         return "";
     }
+
+     */
 }
