@@ -1,19 +1,3 @@
-ssh root@49.12.223.0
-
-ps aux | grep java
-
-copy file to server
-scp C:\Users\Laura\Downloads\signal-cli-0.10.0.tar.gz root@49.12.223.0:.\signal\
-scp C:\Users\Laura\Entwicklung\MarsChatBot\target\chatbot-2.0.0-jar-with-dependencies.jar root@49.12.223.0:.\mars\
-
-copy folder to server
-scp -r C:\Users\hartmann\Desktop\Sammelbecken\MarsChatBot\target\ root@49.12.65.107:.\mars\
-
-
-
-tmux
-strg+b dann d
-
 ## Environment Configuration
 The app is configured by Env Variables that are read on startup. 
 
