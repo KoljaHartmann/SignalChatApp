@@ -14,7 +14,7 @@ public class SignalController {
                 && globalConfig.getSignalUsername() != null
                 && globalConfig.getSignalSendGroup() != null) {
 
-            String command = String.format("%s -u %s send -m \"%s\" -g %s",
+            String command = String.format("%s -u %s send -m '%s' -g %s",
                     globalConfig.getSignalCliPath(),
                     globalConfig.getSignalUsername(),
                     message,
