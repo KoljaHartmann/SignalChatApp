@@ -3,6 +3,7 @@ package Game;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class SignalController {
 
@@ -21,8 +22,20 @@ public class SignalController {
                     globalConfig.getSignalSendGroup());
 
             System.out.println("attempt to run: \n\t" + command);
+
+            ArrayList<String> cmdList = new ArrayList<>();
+
+            cmdList.add(globalConfig.getSignalCliPath());
+            cmdList.add("-u");
+            cmdList.add(globalConfig.getSignalUsername());
+            cmdList.add("send");
+            cmdList.add("-m");
+            cmdList.add(message);
+            cmdList.add("-g");
+            cmdList.add(globalConfig.getSignalSendGroup());
+
             try {
-                Process proc = Runtime.getRuntime().exec(command);
+                Process proc = Runtime.getRuntime().exec((String[]) cmdList.toArray());
 
                 BufferedReader stdError = new BufferedReader(new
                         InputStreamReader(proc.getErrorStream()));
@@ -35,7 +48,7 @@ public class SignalController {
                 while ((line = stdInput.readLine()) != null) {
                     System.out.println(line);
                 }
-                
+
                 System.out.println("ERROR");
                 while ((line = stdError.readLine()) != null) {
                     System.out.println(line);
