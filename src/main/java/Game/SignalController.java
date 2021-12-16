@@ -15,14 +15,6 @@ public class SignalController {
                 && globalConfig.getSignalUsername() != null
                 && globalConfig.getSignalSendGroup() != null) {
 
-            String command = String.format("%s -u %s send -m '%s' -g %s",
-                    globalConfig.getSignalCliPath(),
-                    globalConfig.getSignalUsername(),
-                    message,
-                    globalConfig.getSignalSendGroup());
-
-            System.out.println("attempt to run: \n\t" + command);
-
             ArrayList<String> cmdList = new ArrayList<>();
 
             cmdList.add(globalConfig.getSignalCliPath());
@@ -35,7 +27,7 @@ public class SignalController {
             cmdList.add(globalConfig.getSignalSendGroup());
 
             try {
-                Process proc = Runtime.getRuntime().exec((String[]) cmdList.toArray());
+                Process proc = Runtime.getRuntime().exec(cmdList.toArray(new String[0]));
 
                 BufferedReader stdError = new BufferedReader(new
                         InputStreamReader(proc.getErrorStream()));
