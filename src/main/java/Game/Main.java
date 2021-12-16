@@ -23,7 +23,6 @@ public class Main {
         );
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
                 () -> {
-                    globalConfig.getLock().lock();
                     if (!lastUsedUrl.equals(globalConfig.getGameUrl())) {
                         System.out.println("GameUrl Changed. resetting lastJson");
                         lastJson = null;
@@ -49,8 +48,6 @@ public class Main {
                         System.out.println("currentJson" + currentJson);
                         lastJson = currentJson;
                         System.out.println(e.getMessage());
-                    } finally {
-                        globalConfig.getLock().unlock();
                     }
                 },
                 50,

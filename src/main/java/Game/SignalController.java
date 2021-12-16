@@ -22,8 +22,26 @@ public class SignalController {
 
             System.out.println("attempt to run: \n\t" + command);
             try {
-                Runtime.getRuntime().exec(command);
-            } catch (Exception e) {
+                Process proc = Runtime.getRuntime().exec(command);
+
+                BufferedReader stdError = new BufferedReader(new
+                        InputStreamReader(proc.getErrorStream()));
+
+                BufferedReader stdInput = new BufferedReader(new
+                        InputStreamReader(proc.getInputStream()));
+                // Read the output from the command
+                String line = null;
+                System.out.println("INFO");
+                while ((line = stdInput.readLine()) != null) {
+                    System.out.println(line);
+                }
+                
+                System.out.println("ERROR");
+                while ((line = stdError.readLine()) != null) {
+                    System.out.println(line);
+                }
+
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
@@ -116,29 +134,24 @@ public class SignalController {
 
     static private void handleIncomingMessage(String groupId, String body) {
         GlobalConfig globalConfig = GlobalConfig.getInstance();
-        globalConfig.getLock().lock();
-        try {
-            if (groupId != null && body != null && groupId.equals(globalConfig.getSignalConfigGroup())) {
-                String[] bodyParts = body.trim().split(" ");
-                if (bodyParts.length == 2) {
-                    String command = bodyParts[0].trim();
-                    String parameter = bodyParts[1].trim();
+        if (groupId != null && body != null && groupId.equals(globalConfig.getSignalConfigGroup())) {
+            String[] bodyParts = body.trim().split(" ");
+            if (bodyParts.length == 2) {
+                String command = bodyParts[0].trim();
+                String parameter = bodyParts[1].trim();
 
-                    switch (command) {
-                        case "setGameUrl":
-                            System.out.println("setting GameUrl to [" + parameter + "]");
-                            globalConfig.setGameUrl(parameter);
-                            break;
-                        default:
-                            System.out.println("ERROR: unknown Command [" + command + "] parameter: [" + parameter + "]");
-                    }
-                } else {
-                    System.out.println("Unable to handle message, too many parts: " + body);
+                switch (command) {
+                    case "setGameUrl":
+                        System.out.println("setting GameUrl to [" + parameter + "]");
+                        globalConfig.setGameUrl(parameter);
+                        break;
+                    default:
+                        System.out.println("ERROR: unknown Command [" + command + "] parameter: [" + parameter + "]");
                 }
-
+            } else {
+                System.out.println("Unable to handle message, too many parts: " + body);
             }
-        } finally {
-            globalConfig.getLock().unlock();
+
         }
 
     }

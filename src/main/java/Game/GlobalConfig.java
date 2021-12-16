@@ -19,17 +19,13 @@ public class GlobalConfig {
     private String signalConfigGroup;
     private String signalCliPath;
 
-    private final Lock lock;
-
     private GlobalConfig() {
         this.gameUrl = System.getenv(TM_GAME_URL_ENV) != null ? System.getenv(TM_GAME_URL_ENV) : "";
         this.signalUsername = System.getenv(SIGNAL_USERNAME_ENV);
         this.signalSendGroup = System.getenv(SIGNAL_SEND_GROUP_ENV);
         this.signalConfigGroup = System.getenv(SIGNAL_CONFIG_GROUP_ENV);
         this.signalCliPath = System.getenv(SIGNAL_CLI_PATH_ENV);
-        this.lock = new ReentrantLock();
         System.out.println("Config Created: \n" + this);
-
     }
 
     public static GlobalConfig getInstance() {
@@ -88,7 +84,4 @@ public class GlobalConfig {
                 "\n\t Signal Config [%s]", gameUrl, signalCliPath, signalUsername, signalSendGroup, signalConfigGroup);
     }
 
-    public Lock getLock() {
-        return lock;
-    }
 }
