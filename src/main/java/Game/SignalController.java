@@ -22,7 +22,25 @@ public class SignalController {
 
             System.out.println("attempt to run: \n\t" + command);
             try {
-                Runtime.getRuntime().exec(command);
+                Process proc = Runtime.getRuntime().exec(command);
+
+                BufferedReader stdError = new BufferedReader(new
+                        InputStreamReader(proc.getErrorStream()));
+
+                BufferedReader stdInput = new BufferedReader(new
+                        InputStreamReader(proc.getInputStream()));
+                // Read the output from the command
+                String line = null;
+                System.out.println("INFO");
+                while ((line = stdInput.readLine()) != null) {
+                    System.out.println(line);
+                }
+                
+                System.out.println("ERROR");
+                while ((line = stdError.readLine()) != null) {
+                    System.out.println(line);
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
