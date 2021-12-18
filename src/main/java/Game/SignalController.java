@@ -149,13 +149,15 @@ public class SignalController {
                     if (url != null) {
                         System.out.println("setting GameUrl to [" + url + "]");
                         globalConfig.setGameUrl(url);
+                        sendMessage("GameUrl configured successfully", groupId);
                     }
                 } else {
                     System.out.println("ERROR: unknown Command [" + command + "] parameter: [" + parameter + "]");
                     sendMessage("ERROR: unknown Command [" + command + "] parameter: [" + parameter + "]", groupId);
                 }
             } else {
-                System.out.println("Unable to handle message, too many parts: " + body);
+                System.out.println("Unable to handle message, must contain exactly two parts: " + body);
+                sendMessage("Unable to handle message, must contain exactly two parts: " + body, groupId);
             }
 
         }
