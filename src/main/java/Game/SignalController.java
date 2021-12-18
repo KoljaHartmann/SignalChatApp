@@ -7,13 +7,12 @@ import java.util.ArrayList;
 
 public class SignalController {
 
-    synchronized public static void sendMessage(String message) {
+    synchronized public static void sendMessage(String message, String groupId) {
 
         GlobalConfig globalConfig = GlobalConfig.getInstance();
 
-        if (globalConfig.getSignalCliPath() != null
-                && globalConfig.getSignalUsername() != null
-                && globalConfig.getSignalSendGroup() != null) {
+        if (groupId != null && globalConfig.getSignalCliPath() != null
+                && globalConfig.getSignalUsername() != null) {
 
             ArrayList<String> cmdList = new ArrayList<>();
 
@@ -24,7 +23,7 @@ public class SignalController {
             cmdList.add("-m");
             cmdList.add(message);
             cmdList.add("-g");
-            cmdList.add(globalConfig.getSignalSendGroup());
+            cmdList.add(groupId);
 
             try {
                 Process proc = Runtime.getRuntime().exec(cmdList.toArray(new String[0]));
@@ -35,7 +34,7 @@ public class SignalController {
                 BufferedReader stdInput = new BufferedReader(new
                         InputStreamReader(proc.getInputStream()));
                 // Read the output from the command
-                String line = null;
+                String line;
                 System.out.println("INFO");
                 while ((line = stdInput.readLine()) != null) {
                     System.out.println(line);
@@ -97,7 +96,7 @@ public class SignalController {
                         InputStreamReader(proc.getErrorStream()));
 
                 // Read the output from the command
-                String line = null;
+                String line;
                 String groupId = null;
                 String body = null;
                 boolean groupFound = false;
@@ -145,13 +144,15 @@ public class SignalController {
                 String command = bodyParts[0].trim();
                 String parameter = bodyParts[1].trim();
 
-                switch (command) {
-                    case "setGameUrl":
-                        System.out.println("setting GameUrl to [" + parameter + "]");
-                        globalConfig.setGameUrl(parameter);
-                        break;
-                    default:
-                        System.out.println("ERROR: unknown Command [" + command + "] parameter: [" + parameter + "]");
+                if (command.equals("setGameUrl") || command.equals("Url")) {
+                    String url = parseUrl(parameter, groupId);
+                    if (url != null) {
+                        System.out.println("setting GameUrl to [" + url + "]");
+                        globalConfig.setGameUrl(url);
+                    }
+                } else {
+                    System.out.println("ERROR: unknown Command [" + command + "] parameter: [" + parameter + "]");
+                    sendMessage("ERROR: unknown Command [" + command + "] parameter: [" + parameter + "]", groupId);
                 }
             } else {
                 System.out.println("Unable to handle message, too many parts: " + body);
@@ -159,6 +160,17 @@ public class SignalController {
 
         }
 
+    }
+
+    private static String parseUrl(String url, String groupId) {
+        if (url.contains("/api/player")) {
+            return url;
+        } else if(url.contains("/player")) {
+            return url.replace("/player", "/api/player");
+        } else {
+            sendMessage("ERROR: Could not parse url " + url, groupId);
+            return null;
+        }
     }
 
 }

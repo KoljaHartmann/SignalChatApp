@@ -10,12 +10,13 @@ import static Game.Phases.RESEARCH;
 
 public class JsonEvaluator {
 
-    public static void evaluateSendingMessage(JSONObject lastJson, JSONObject currentJson) throws InterruptedException {
+    public static void evaluateSendingMessage(JSONObject lastJson, JSONObject currentJson) {
         String message = "";
         Phases currentPhase = getPhase(currentJson);
         Phases lastPhase = getPhase(lastJson);
         final ArrayList<String> currentPlayers = getActivePlayers(currentJson);
         final ArrayList<String> lastActivePlayers = getActivePlayers(lastJson);
+        GlobalConfig globalConfig = GlobalConfig.getInstance();
 
         if (currentPhase.equals(DRAFTING)) {
             if (lastActivePlayers.size() > 1 && currentPlayers.size() == 1) {
@@ -46,8 +47,8 @@ public class JsonEvaluator {
                 }
             }
         }
-        if (!message.isEmpty()) {
-            SignalController.sendMessage(message);
+        if (!message.isEmpty() && (globalConfig.getSignalSendGroup() != null)) {
+            SignalController.sendMessage(message, globalConfig.getSignalSendGroup());
         }
     }
 
