@@ -1,4 +1,4 @@
-package Game;
+package TerraformingMars;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,14 +28,20 @@ public class ChatMacros {
                     "Weniger Eierschaukeln, mehr Karten kaufen!",
                     "Nur die Karten kommen in' Garten!",
                     "Niemand hat die Absicht, für dich deine Karten zu kaufen!",
-                    "Dies sind keine Fake News!"
+                    "Dies sind keine Fake News!",
+                    "Was letzte Preis?"
             ));
 
     private static final ArrayList<String> draftMessageList = new ArrayList<>(
             Arrays.asList(
-                    "Ping @all. It's drafting time!",
+                    "Ping @all. Es darf gedraftet werden.",
+                    "Ping @all. Bitte draften Sie jetzt.",
+                    "Ping @all. Eine neue Draftrunde startet.",
+                    "Draften",
                     "Dröft"
             ));
+
+    private static final Random rand = new Random();
 
     public static String getPlayerName(String player) {
         final String name = playerNames.get(player);
@@ -45,16 +51,16 @@ public class ChatMacros {
     public static String getSimplePing(String player) { return "Ping @" + getPlayerName(player); }
 
     public static String getDraftMessage() {
-        Random rand = new Random();
         return draftMessageList.get(rand.nextInt(draftMessageList.size()));
     }
 
-    public static String getResearchMessage() { return "Ping @all. Please buy your cards!"; }
+    public static String getResearchMessage() {
+        return "Ping @all. Karten kaufen.";
+    }
 
     public static String getResearchPing(String player) {
-        Random rand = new Random();
         return "Ping @" + getPlayerName(player) + ". " + researchPingList.get(rand.nextInt(researchPingList.size()));
     }
 
-    public static String finalGreeneryPing(String player) { return "Ping @" + getPlayerName(player) + ", place your final Greenery"; }
+    public static String finalGreeneryPing(String player) { return "Ping @" + getPlayerName(player) + ", bitte plazieren Sie Ihre letzte Grünfläche."; }
 }

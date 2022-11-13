@@ -1,12 +1,14 @@
-package Game;
+package TerraformingMars;
 
+import SignalController.GlobalConfig;
+import SignalController.SignalController;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static Game.Phases.*;
-import static Game.Phases.RESEARCH;
+import static TerraformingMars.Phases.*;
+import static TerraformingMars.Phases.RESEARCH;
 
 public class JsonEvaluator {
 

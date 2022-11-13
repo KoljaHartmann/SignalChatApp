@@ -1,7 +1,4 @@
-package Game;
-
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+package SignalController;
 
 public class GlobalConfig {
 
@@ -14,10 +11,10 @@ public class GlobalConfig {
     private static GlobalConfig instance;
 
     private String gameUrl;
-    private String signalUsername;
-    private String signalSendGroup;
-    private String signalConfigGroup;
-    private String signalCliPath;
+    private final String signalUsername;
+    private final String signalSendGroup;
+    private final String signalConfigGroup;
+    private final String signalCliPath;
 
     private GlobalConfig() {
         this.gameUrl = System.getenv(TM_GAME_URL_ENV) != null ? System.getenv(TM_GAME_URL_ENV) : "";
@@ -47,32 +44,16 @@ public class GlobalConfig {
         return signalSendGroup;
     }
 
-    public void setSignalSendGroup(String signalSendGroup) {
-        this.signalSendGroup = signalSendGroup;
-    }
-
     public String getSignalUsername() {
         return signalUsername;
-    }
-
-    public void setSignalUsername(String signalUsername) {
-        this.signalUsername = signalUsername;
     }
 
     public String getSignalConfigGroup() {
         return signalConfigGroup;
     }
 
-    public void setSignalConfigGroup(String signalConfigGroup) {
-        this.signalConfigGroup = signalConfigGroup;
-    }
-
     public String getSignalCliPath() {
         return signalCliPath;
-    }
-
-    public void setSignalCliPath(String signalCliPath) {
-        this.signalCliPath = signalCliPath;
     }
 
     public String toString() {

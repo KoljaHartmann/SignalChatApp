@@ -1,13 +1,13 @@
-package Game;
+package SignalController;
 
+import TerraformingMars.JsonEvaluator;
+import TerraformingMars.MarsController;
 import org.json.JSONObject;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
-    //TODO MARS_URL als property
-    //TODO Game.Phases.INITIAL_DRAFTING
 
     private static String lastUsedUrl = "";
     private static JSONObject lastJson;
@@ -19,8 +19,10 @@ public class Main {
 
         SignalController.connect();
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
-                SignalController::receiveMessages, 0, 20, TimeUnit.SECONDS
+                SignalController::receiveMessages, 0, 2, TimeUnit.SECONDS
         );
+
+        // Mars Json check
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
                 () -> {
                     if (!lastUsedUrl.equals(globalConfig.getGameUrl())) {

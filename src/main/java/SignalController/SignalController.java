@@ -1,4 +1,6 @@
-package Game;
+package SignalController;
+
+import TerraformingMars.SignalMessageReceiver;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -138,41 +140,15 @@ public class SignalController {
 
     static private void handleIncomingMessage(String groupId, String body) {
         GlobalConfig globalConfig = GlobalConfig.getInstance();
-        if (groupId != null && body != null && groupId.equals(globalConfig.getSignalConfigGroup())) {
-            String[] bodyParts = body.trim().split(" ");
-            if (bodyParts.length == 2) {
-                String command = bodyParts[0].trim();
-                String parameter = bodyParts[1].trim();
 
-                if (command.equals("setGameUrl") || command.equals("Url")) {
-                    String url = parseUrl(parameter, groupId);
-                    if (url != null) {
-                        System.out.println("setting GameUrl to [" + url + "]");
-                        globalConfig.setGameUrl(url);
-                        sendMessage("GameUrl configured successfully", groupId);
-                    }
-                } else {
-                    System.out.println("ERROR: unknown Command [" + command + "] parameter: [" + parameter + "]");
-                    sendMessage("ERROR: unknown Command [" + command + "] parameter: [" + parameter + "]", groupId);
-                }
+        if (groupId != null && body != null) {
+            if(groupId.equals(globalConfig.getSignalConfigGroup())) {
+                SignalMessageReceiver.receive(groupId, body);
             } else {
-                System.out.println("Unable to handle message, must contain exactly two parts: " + body);
-                sendMessage("Unable to handle message, must contain exactly two parts: " + body, groupId);
+                // TODO
             }
-
-        }
-
-    }
-
-    private static String parseUrl(String url, String groupId) {
-        if (url.contains("/api/player")) {
-            return url;
-        } else if(url.contains("/player")) {
-            return url.replace("/player", "/api/player");
         } else {
-            sendMessage("ERROR: Could not parse url " + url, groupId);
-            return null;
+            // TODO
         }
     }
-
 }
