@@ -19,7 +19,7 @@ public class Main {
 
         SignalController.connect();
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
-                SignalController::receiveMessages, 0, 2, TimeUnit.SECONDS
+                SignalController::receiveMessages, 0, 3, TimeUnit.SECONDS
         );
 
         // Mars Json check

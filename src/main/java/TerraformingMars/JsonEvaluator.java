@@ -49,8 +49,8 @@ public class JsonEvaluator {
                 }
             }
         }
-        if (!message.isEmpty() && (globalConfig.getSignalSendGroup() != null)) {
-            SignalController.sendMessage(message, globalConfig.getSignalSendGroup());
+        if (!message.isEmpty() && (globalConfig.getSignalMarsChatGroup() != null)) {
+            SignalController.sendMessage(message, globalConfig.getSignalMarsChatGroup());
         }
     }
 

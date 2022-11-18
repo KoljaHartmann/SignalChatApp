@@ -1,6 +1,6 @@
 package SignalController;
 
-import TerraformingMars.SignalMessageReceiver;
+import RoboRock.SignalMessageReceiver;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,13 +28,13 @@ public class SignalController {
             cmdList.add(groupId);
 
             try {
-                Process proc = Runtime.getRuntime().exec(cmdList.toArray(new String[0]));
+                Process process = Runtime.getRuntime().exec(cmdList.toArray(new String[0]));
 
                 BufferedReader stdError = new BufferedReader(new
-                        InputStreamReader(proc.getErrorStream()));
+                        InputStreamReader(process.getErrorStream()));
 
                 BufferedReader stdInput = new BufferedReader(new
-                        InputStreamReader(proc.getInputStream()));
+                        InputStreamReader(process.getInputStream()));
                 // Read the output from the command
                 String line;
                 System.out.println("INFO");
@@ -47,7 +47,7 @@ public class SignalController {
                     System.out.println(line);
                 }
 
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
@@ -65,11 +65,11 @@ public class SignalController {
                 globalConfig.getSignalUsername());
 
         try {
-            if(globalConfig.getSignalConfigGroup() != null && !globalConfig.getSignalConfigGroup().isEmpty()) {
-                Runtime.getRuntime().exec(baseCommand + globalConfig.getSignalConfigGroup());
+            if(globalConfig.getSignalMarsConfigGroup() != null && !globalConfig.getSignalMarsConfigGroup().isEmpty()) {
+                Runtime.getRuntime().exec(baseCommand + globalConfig.getSignalMarsConfigGroup());
             }
-            if(globalConfig.getSignalSendGroup() != null && !globalConfig.getSignalSendGroup().isEmpty()) {
-                Runtime.getRuntime().exec(baseCommand + globalConfig.getSignalSendGroup());
+            if(globalConfig.getSignalMarsChatGroup() != null && !globalConfig.getSignalMarsChatGroup().isEmpty()) {
+                Runtime.getRuntime().exec(baseCommand + globalConfig.getSignalMarsChatGroup());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -90,12 +90,9 @@ public class SignalController {
                     globalConfig.getSignalUsername());
 
             try {
-                Process proc = Runtime.getRuntime().exec(command);
+                Process process = Runtime.getRuntime().exec(command);
                 BufferedReader stdInput = new BufferedReader(new
-                        InputStreamReader(proc.getInputStream()));
-
-                BufferedReader stdError = new BufferedReader(new
-                        InputStreamReader(proc.getErrorStream()));
+                        InputStreamReader(process.getInputStream()));
 
                 // Read the output from the command
                 String line;
@@ -120,18 +117,14 @@ public class SignalController {
                         groupId = line.replace("Id:", "").trim();
                         groupFound = false;
                     }
-
                     if (line.isEmpty()) {
                         handleIncomingMessage(groupId, body);
                         groupId = null;
                         body = null;
                     }
-
                     System.out.println(line);
-
                 }
-
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -140,15 +133,12 @@ public class SignalController {
 
     static private void handleIncomingMessage(String groupId, String body) {
         GlobalConfig globalConfig = GlobalConfig.getInstance();
-
         if (groupId != null && body != null) {
-            if(groupId.equals(globalConfig.getSignalConfigGroup())) {
+            if(groupId.equals(globalConfig.getSignalMarsConfigGroup())) {
+                TerraformingMars.SignalMessageReceiver.receive(groupId, body);
+            } else if (groupId.equals(globalConfig.getSignalRockyGroup())){
                 SignalMessageReceiver.receive(groupId, body);
-            } else {
-                // TODO
             }
-        } else {
-            // TODO
         }
     }
 }
