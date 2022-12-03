@@ -4,17 +4,19 @@ import TerraformingMars.JsonEvaluator;
 import TerraformingMars.MarsController;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public class Main {
 
     private static String lastUsedUrl = "";
     private static JSONObject lastJson;
+    private static JSONObject currentJson;
 
     public static void main(String[] args) {
-        System.out.println("Starting Chatbot");
-
+        FileLogger.logInfo("Starting Chatbot");
         GlobalConfig globalConfig = GlobalConfig.getInstance();
 
         SignalController.connect();
@@ -25,16 +27,15 @@ public class Main {
         // Mars Json check
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
                 () -> {
-                    if (!lastUsedUrl.equals(globalConfig.getGameUrl())) {
-                        System.out.println("GameUrl Changed. resetting lastJson");
-                        lastJson = null;
-                    }
-                    lastUsedUrl = globalConfig.getGameUrl();
-
-
-                    System.out.println("CurrentUrl: [" + globalConfig.getGameUrl() + "]");
-                    JSONObject currentJson = null;
                     try {
+                        if (!lastUsedUrl.equals(globalConfig.getGameUrl())) {
+                            System.out.println("GameUrl Changed. resetting lastJson");
+                            lastJson = null;
+                        }
+                        lastUsedUrl = globalConfig.getGameUrl();
+
+                        System.out.println("CurrentUrl: [" + globalConfig.getGameUrl() + "]");
+
                         currentJson = MarsController.readMarsJson(globalConfig.getGameUrl());
                         if (currentJson == null) {
                             System.out.println("No Json found");
@@ -46,10 +47,10 @@ public class Main {
                         }
                         lastJson = currentJson;
                     } catch (Exception e) {
-                        System.out.println("lastJson: " + lastJson);
-                        System.out.println("currentJson" + currentJson);
+                        FileLogger.logError("Error in the Mars Json Check:", e);
+                        FileLogger.logError("lastJson: " + lastJson);
+                        FileLogger.logError("currentJson" + currentJson);
                         lastJson = currentJson;
-                        System.out.println(e.getMessage());
                     }
                 },
                 50,

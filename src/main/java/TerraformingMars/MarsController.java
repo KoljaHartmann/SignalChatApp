@@ -1,5 +1,6 @@
 package TerraformingMars;
 
+import SignalController.FileLogger;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -24,8 +25,7 @@ public class MarsController {
             }
             return new JSONObject(sb.toString());
         } catch (Exception e) {
-            System.out.println("Problems reading JSON from " + url);
-            e.printStackTrace();
+            FileLogger.logError("Problems reading JSON from " + url, e);
         }
         return new JSONObject();
     }

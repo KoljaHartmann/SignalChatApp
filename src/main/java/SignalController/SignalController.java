@@ -48,10 +48,10 @@ public class SignalController {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                FileLogger.logError(e);
             }
         } else {
-            System.out.println("ERROR: Unable to send message. Mandatory globalConfig Values not set. \n\t" + globalConfig);
+            FileLogger.logError("ERROR: Unable to send message. Mandatory globalConfig Values not set. \n\t" + globalConfig);
         }
     }
 
@@ -72,7 +72,7 @@ public class SignalController {
                 Runtime.getRuntime().exec(baseCommand + globalConfig.getSignalMarsChatGroup());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            FileLogger.logError(e);
         }
 
 
@@ -125,7 +125,7 @@ public class SignalController {
                     System.out.println(line);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                FileLogger.logError(e);
             }
         }
 
