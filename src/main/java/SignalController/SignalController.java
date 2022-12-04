@@ -78,7 +78,7 @@ public class SignalController {
 
     }
 
-    synchronized public static void receiveMessages() {
+    synchronized public static void processIncomingMessages() {
         System.out.println("receiving messages");
 
         GlobalConfig globalConfig = GlobalConfig.getInstance();
