@@ -63,4 +63,16 @@ public class ChatMacros {
     }
 
     public static String finalGreeneryPing(String player) { return "Ping @" + getPlayerName(player) + ", bitte plazieren Sie Ihre letzte Grünfläche."; }
+
+    public static String getWinnerCelebrations(String winner, int winnerVP, boolean tieBreakerWin) {
+        if (tieBreakerWin) {
+            return getPlayerName(winner) + " gewinnt über den Tiebreaker. Was ein knapper Sieg!";
+        } else {
+            return getPlayerName(winner) + " gewinnt mit " + winnerVP + " Punkten. Gratulation!";
+        }
+    }
+
+    public static String getDrawCelebrations(String winner, String secondPlace) {
+        return "Unglaublich. Ein Gleichstand zwischen " + getPlayerName(winner) + " und " + getPlayerName(secondPlace) + "! Herzlichen Glückwunsch!";
+    }
 }

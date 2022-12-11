@@ -5,6 +5,7 @@ public enum  Phases {
     DRAFTING,
     RESEARCH,
     ACTION,
+    END,
     PRODUCTION;
 
     @Override

@@ -23,6 +23,7 @@ public class GlobalConfig {
     private final String signalCliPath;
     private final String signalRockyGroup;
     private final String rockyUrl;
+    private boolean marsGameFinished;
 
     private GlobalConfig() {
         this.gameUrl = System.getenv(TM_GAME_URL_ENV) != null ? System.getenv(TM_GAME_URL_ENV) : "";
@@ -32,6 +33,7 @@ public class GlobalConfig {
         this.signalCliPath = System.getenv(SIGNAL_CLI_PATH_ENV);
         this.signalRockyGroup = System.getenv(SIGNAL_ROCKY_GROUP_ENV);
         this.rockyUrl = System.getenv(ROCKY_URL_ENV);
+        this.marsGameFinished = false;
         System.out.println("Config Created: \n" + this);
     }
 
@@ -48,6 +50,7 @@ public class GlobalConfig {
 
     public void setGameUrl(String gameUrl) {
         this.gameUrl = gameUrl;
+        this.marsGameFinished = false;
     }
 
     public String getSignalMarsChatGroup() {
@@ -85,4 +88,11 @@ public class GlobalConfig {
                 "\n\t Mars Config Group[%s]", gameUrl, signalCliPath, signalUsername, signalRockyGroup, rockyUrl, signalMarsChatGroup, signalMarsConfigGroup);
     }
 
+    public boolean getMarsGameFinished() {
+        return marsGameFinished;
+    }
+
+    public void setMarsGameFinished(boolean finished) {
+        marsGameFinished = finished;
+    }
 }

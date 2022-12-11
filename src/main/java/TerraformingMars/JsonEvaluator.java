@@ -24,7 +24,9 @@ public class JsonEvaluator {
         final ArrayList<String> currentPlayers = getActivePlayers(currentJson);
         final ArrayList<String> lastActivePlayers = getActivePlayers(lastJson);
 
-        if (currentPhase.equals(DRAFTING)) {
+        if (globalConfig.getMarsGameFinished()) {
+            return;
+        } else if (currentPhase.equals(DRAFTING)) {
             if (lastActivePlayers.size() > 1 && currentPlayers.size() == 1) {
                 message = ChatMacros.getSimplePing(currentPlayers.get(0));
             } else if (lastActivePlayers.size() == 1 && currentPlayers.size() > 1) {
@@ -52,6 +54,9 @@ public class JsonEvaluator {
                     message = ChatMacros.finalGreeneryPing(currentPlayers.get(0));
                 }
             }
+        } else if (currentPhase.equals(END)) {
+            message = getWinnerMessage(currentJson);
+            globalConfig.setMarsGameFinished(true);
         }
         if (!message.isEmpty() && (globalConfig.getSignalMarsChatGroup() != null)) {
             SignalController.sendMessage(message, globalConfig.getSignalMarsChatGroup());
@@ -68,9 +73,49 @@ public class JsonEvaluator {
             if ((boolean) timer.get("running")) {
                 activePlayers.add((String) player.get("name"));
             }
-
         }
         return activePlayers;
+    }
+
+    private static String getWinnerMessage(JSONObject jsonObject) {
+        final JSONArray players = (JSONArray) jsonObject.get("players");
+        String winner = "";
+        int winnerVP = 0;
+        int winnerMC = 0;
+        boolean tieBreakerWin = false;
+        boolean doubleTie = false;
+        String secondPlace = "";
+
+        for (Object playerObject : players) {
+            final JSONObject player = (JSONObject) playerObject;
+            final JSONObject pointsBreakdown = (JSONObject) player.get("victoryPointsBreakdown");
+            int playerVP = (int) pointsBreakdown.get("total");
+            if (playerVP > winnerVP) {
+                winner = (String) player.get("name");
+                winnerVP = playerVP;
+                winnerMC = (int) player.get("megaCredits");
+                tieBreakerWin = false;
+                doubleTie = false;
+            } else if (playerVP == winnerVP) {
+                int megaCredits = (int) player.get("megaCredits");
+                if (megaCredits > winnerMC) {
+                    winner = (String) player.get("name");
+                    winnerMC = (int) player.get("megaCredits");
+                    tieBreakerWin = true;
+                    doubleTie = false;
+                } else if (megaCredits == winnerMC) {
+                    secondPlace = (String) player.get("name");
+                    winnerMC = (int) player.get("megaCredits");
+                    tieBreakerWin = true;
+                    doubleTie = true;
+                }
+            }
+        }
+        if (doubleTie) {
+            return ChatMacros.getDrawCelebrations(winner, secondPlace);
+        } else {
+            return ChatMacros.getWinnerCelebrations(winner, winnerVP, tieBreakerWin);
+        }
     }
 
     private static Phases getPhase(JSONObject jsonObject) {

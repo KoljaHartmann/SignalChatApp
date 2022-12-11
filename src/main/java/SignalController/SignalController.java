@@ -1,7 +1,5 @@
 package SignalController;
 
-import RoboRock.SignalMessageReceiver;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -137,7 +135,7 @@ public class SignalController {
             if(groupId.equals(globalConfig.getSignalMarsConfigGroup())) {
                 TerraformingMars.SignalMessageReceiver.receive(groupId, body);
             } else if (groupId.equals(globalConfig.getSignalRockyGroup())){
-                SignalMessageReceiver.receive(groupId, body);
+                RoboRock.SignalMessageReceiver.receive(groupId, body);
             }
         }
     }
