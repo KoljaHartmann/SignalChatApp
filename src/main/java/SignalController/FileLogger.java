@@ -64,7 +64,7 @@ public class FileLogger {
     private static class FileFormatter extends Formatter {
         @Override
         public String format(LogRecord record) {
-            SimpleDateFormat logTime = new SimpleDateFormat("HH:mm:ss");
+            SimpleDateFormat logTime = new SimpleDateFormat("dd.MM HH:mm:ss");
             Calendar calendar = new GregorianCalendar();
             calendar.setTimeInMillis(record.getMillis());
             Throwable thrown = record.getThrown();

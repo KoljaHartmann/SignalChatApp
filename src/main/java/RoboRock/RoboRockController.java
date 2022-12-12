@@ -1,5 +1,6 @@
 package RoboRock;
 
+import SignalController.FileLogger;
 import SignalController.GlobalConfig;
 import okhttp3.*;
 
@@ -34,8 +35,7 @@ public class RoboRockController {
                     .build();
             return client.newCall(request).execute();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
+            FileLogger.logError(e);
             return null;
         }
     }

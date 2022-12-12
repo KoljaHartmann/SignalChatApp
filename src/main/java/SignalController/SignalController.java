@@ -77,17 +77,17 @@ public class SignalController {
     }
 
     synchronized public static void processIncomingMessages() {
-        System.out.println("receiving messages");
+        try {
+            System.out.println("receiving messages");
 
-        GlobalConfig globalConfig = GlobalConfig.getInstance();
-        if (globalConfig.getSignalCliPath() != null
-                && globalConfig.getSignalUsername() != null) {
+            GlobalConfig globalConfig = GlobalConfig.getInstance();
+            if (globalConfig.getSignalCliPath() != null
+                    && globalConfig.getSignalUsername() != null) {
 
-            String command = String.format("%s -u %s receive",
-                    globalConfig.getSignalCliPath(),
-                    globalConfig.getSignalUsername());
+                String command = String.format("%s -u %s receive",
+                        globalConfig.getSignalCliPath(),
+                        globalConfig.getSignalUsername());
 
-            try {
                 Process process = Runtime.getRuntime().exec(command);
                 BufferedReader stdInput = new BufferedReader(new
                         InputStreamReader(process.getInputStream()));
@@ -122,11 +122,10 @@ public class SignalController {
                     }
                     System.out.println(line);
                 }
-            } catch (Exception e) {
-                FileLogger.logError(e);
             }
+        } catch (Exception e) {
+            FileLogger.logError(e);
         }
-
     }
 
     static private void handleIncomingMessage(String groupId, String body) {
