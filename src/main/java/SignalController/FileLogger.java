@@ -31,6 +31,7 @@ public class FileLogger {
             initLogger();
         }
         logger.info(message);
+        System.out.println(message);
     }
 
     public static void logWarning(String message) {
@@ -38,6 +39,7 @@ public class FileLogger {
             initLogger();
         }
         logger.warning(message);
+        System.out.println(message);
     }
 
     public static void logError(String message) {
@@ -45,6 +47,7 @@ public class FileLogger {
             initLogger();
         }
         logger.severe(message);
+        System.out.println(message);
     }
 
     public static void logError(String message, Exception e) {
@@ -52,6 +55,8 @@ public class FileLogger {
             initLogger();
         }
         logger.log(Level.SEVERE, message, e);
+        System.out.println(message);
+        e.printStackTrace();
     }
 
     public static void logError(Exception e) {
@@ -59,6 +64,7 @@ public class FileLogger {
             initLogger();
         }
         logger.log(Level.SEVERE, e.getMessage(), e);
+        e.printStackTrace();
     }
 
     private static class FileFormatter extends Formatter {
