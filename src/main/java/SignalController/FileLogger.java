@@ -50,7 +50,7 @@ public class FileLogger {
         System.out.println(message);
     }
 
-    public static void logError(String message, Exception e) {
+    public static void logError(String message, Throwable e) {
         if (logger.getHandlers().length < 1) {
             initLogger();
         }
@@ -59,7 +59,7 @@ public class FileLogger {
         e.printStackTrace();
     }
 
-    public static void logError(Exception e) {
+    public static void logError(Throwable e) {
         if (logger.getHandlers().length < 1) {
             initLogger();
         }

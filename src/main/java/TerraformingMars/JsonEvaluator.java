@@ -144,7 +144,7 @@ public class JsonEvaluator {
                 JsonEvaluator.evaluateSendingMessage(lastJson, currentJson);
             }
             lastJson = currentJson;
-        } catch (Exception e) {
+        } catch (Throwable e) {
             FileLogger.logError("Error in the Mars Json Check:", e);
             FileLogger.logError("lastJson: " + lastJson);
             FileLogger.logError("currentJson" + currentJson);
