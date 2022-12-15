@@ -35,7 +35,7 @@ public class Main {
                         }
                         if (marsThread[0].isDone()) {
                             FileLogger.logWarning("Mars Thread is down. Restarting..");
-                            SignalController.sendMessage("Oh, da ist mir wohl ein kleines Malleur passiert. Ich werde mich darum kümmern."
+                            SignalController.sendMessage("Oh, da ist mir wohl ein kleines Malheur passiert. Ich werde mich darum kümmern."
                                     , GlobalConfig.getInstance().getSignalMarsChatGroup());
                             marsThread[0] = Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
                                     JsonEvaluator::processGameState, 50, 1500, TimeUnit.MILLISECONDS
