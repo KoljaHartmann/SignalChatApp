@@ -16,6 +16,7 @@ public class ChatMacros {
             "BOB ftl.","Lukas",
             "GomJabbar","Daniel",
             "Gom Jabbar","Daniel",
+            "Gomfunkel","Daniel",
             "DartVader","Kolja",
             "Dart Vader","Kolja"
     );
