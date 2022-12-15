@@ -26,7 +26,7 @@ public class SignalMessageReceiver {
     public static void receive(String groupId, String body) {
         for (List<String> list : patternMap.keySet()) {
             for (String keyWord : list) {
-                if (body.contains(keyWord)) {
+                if (body.toLowerCase(Locale.ROOT).contains(keyWord)) {
                     triggerCommand(patternMap.get(list), groupId);
                 }
             }
