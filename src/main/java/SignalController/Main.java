@@ -22,6 +22,7 @@ public class Main {
                 JsonEvaluator::processGameState, 50, 1500, TimeUnit.MILLISECONDS
         )};
 
+
         // Check if Signal and Mars Threads are still alive
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
                 () -> {
@@ -46,6 +47,5 @@ public class Main {
                     }
                 }, 5, 10, TimeUnit.SECONDS
         );
-
     }
 }

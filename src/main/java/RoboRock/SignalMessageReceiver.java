@@ -28,9 +28,11 @@ public class SignalMessageReceiver {
             for (String keyWord : list) {
                 if (body.toLowerCase(Locale.ROOT).contains(keyWord)) {
                     triggerCommand(patternMap.get(list), groupId);
+                    return;
                 }
             }
         }
+        SignalController.sendMessage("Diesen Befehl kann ich nicht verstehen :/", groupId);
     }
 
     private static void triggerCommand(Command command, String groupId) {
@@ -81,11 +83,11 @@ public class SignalMessageReceiver {
                 SignalController.sendMessage("Okay, ich sauge den Flur und das Bad.", groupId);
             }
         } else {
-            SignalController.sendMessage("Diesen Befehl kann ich nicht verstehen :/", groupId);
-            return;
+            response = null;
+            SignalController.sendMessage("Kolja hat Mist gebaut und den command " + command + " nicht sauber implementiert.", groupId);
         }
 
-        if (response == null || response.code() != 200) {
+        if (response != null && response.code() != 200) {
             SignalController.sendMessage("Leider habe ich einen Fehler :(", groupId);
         }
     }

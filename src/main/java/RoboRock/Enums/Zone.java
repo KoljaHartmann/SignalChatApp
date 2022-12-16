@@ -8,7 +8,7 @@ public enum Zone implements Command{
     KUECHE(-3),
     FLUR_BAD(-4);
 
-    private final int value;
+    private final Integer value;
 
     Zone(Integer value) {
         this.value = value;

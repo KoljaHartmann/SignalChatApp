@@ -123,7 +123,7 @@ public class SignalController {
                     System.out.println(line);
                 }
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             FileLogger.logError(e);
         }
     }

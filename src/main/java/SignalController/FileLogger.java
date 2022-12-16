@@ -27,39 +27,40 @@ public class FileLogger {
     }
 
     public static void logInfo(String message) {
+        System.out.println(message);
         if (logger.getHandlers().length < 1) {
             initLogger();
         }
         logger.info(message);
-        System.out.println(message);
     }
 
     public static void logWarning(String message) {
+        System.out.println(message);
         if (logger.getHandlers().length < 1) {
             initLogger();
         }
         logger.warning(message);
-        System.out.println(message);
     }
 
     public static void logError(String message) {
+        System.out.println(message);
         if (logger.getHandlers().length < 1) {
             initLogger();
         }
         logger.severe(message);
-        System.out.println(message);
     }
 
     public static void logError(String message, Throwable e) {
+        System.out.println(message);
         if (logger.getHandlers().length < 1) {
             initLogger();
         }
         logger.log(Level.SEVERE, message, e);
-        System.out.println(message);
         e.printStackTrace();
     }
 
     public static void logError(Throwable e) {
+        System.out.println(e.getMessage());
         if (logger.getHandlers().length < 1) {
             initLogger();
         }
