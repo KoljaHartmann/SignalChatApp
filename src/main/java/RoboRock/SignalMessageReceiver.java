@@ -20,7 +20,7 @@ public class SignalMessageReceiver {
             List.of("küche"), KUECHE,
             List.of("schlafzimmer"), SCHLAFZIMMER,
             List.of("wohnzimmer"), WOHNZIMMER,
-            List.of("flur", "bad"), FLUR_BAD
+            List.of("flur", "bad"), FLUR
     );
 
     public static void receive(String groupId, String body) {
@@ -77,10 +77,10 @@ public class SignalMessageReceiver {
             if (response != null && response.code() == 200) {
                 SignalController.sendMessage("Okay, ich sauge nur das Wohnzimmer.", groupId);
             }
-        } else if (command == FLUR_BAD) {
-            response = RoboRockController.cleanZone(FLUR_BAD);
+        } else if (command == FLUR) {
+            response = RoboRockController.cleanZone(FLUR);
             if (response != null && response.code() == 200) {
-                SignalController.sendMessage("Okay, ich sauge den Flur und das Bad.", groupId);
+                SignalController.sendMessage("Okay, ich sauge nur den Flur.", groupId);
             }
         } else {
             response = null;

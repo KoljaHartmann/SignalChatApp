@@ -6,7 +6,7 @@ public enum Zone implements Command{
     MULTIZIMMER(-1),
     WOHNZIMMER(-2),
     KUECHE(-3),
-    FLUR_BAD(-4);
+    FLUR(-4);
 
     private final Integer value;
 
