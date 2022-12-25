@@ -25,11 +25,10 @@ public class Main {
         )};
 
         // Scheduled room cleanup each day at 10:45am
-        int currentSecconds = LocalTime.now().toSecondOfDay();
+        int currentSeconds = LocalTime.now().toSecondOfDay();
         int scheduledSeconds = 38700;
-        int delay = scheduledSeconds > (currentSecconds + 5) ? scheduledSeconds - currentSecconds : (scheduledSeconds + 86400) - currentSecconds;
-        System.out.println("Current time in seconds: " + currentSecconds);
-        System.out.println("Scheduling next room clean up in " + delay + " seconds.");
+        int delay = scheduledSeconds > (currentSeconds + 5) ? scheduledSeconds - currentSeconds : (scheduledSeconds + 86400) - currentSeconds;
+        System.out.println("Current time in seconds: " + currentSeconds + ". Scheduling next room clean up in " + delay + " seconds.");
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
                 RoboRockController::cleanRoom, delay, 86400, TimeUnit.SECONDS
         );

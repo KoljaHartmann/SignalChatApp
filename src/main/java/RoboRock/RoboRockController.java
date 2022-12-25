@@ -77,6 +77,7 @@ public class RoboRockController {
 
     public static void cleanRoom() {
         DayOfWeek dayOfWeek = LocalDate.now().getDayOfWeek();
+        FileLogger.logInfo("Room clean up started. We have " + dayOfWeek);
         String signalRockyGroup = GlobalConfig.getInstance().getSignalRockyGroup();
         if (dayOfWeek == DayOfWeek.MONDAY) {
             SignalController.sendMessage("Heute ist das Schlafzimmer an der Reihe, in einer Viertelstunde sauge ich das Schlafzimmer.", signalRockyGroup);
