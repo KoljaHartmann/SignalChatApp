@@ -134,7 +134,7 @@ public class SignalController {
             if(groupId.equals(globalConfig.getSignalMarsConfigGroup())) {
                 TerraformingMars.SignalMessageReceiver.receive(groupId, body);
             } else if (groupId.equals(globalConfig.getSignalRockyGroup())){
-                RoboRock.SignalMessageReceiver.receive(groupId, body);
+                RoboRock.SignalMessageReceiver.receive(body);
             }
         }
     }

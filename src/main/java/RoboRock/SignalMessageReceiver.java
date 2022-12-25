@@ -2,6 +2,7 @@ package RoboRock;
 
 import RoboRock.Enums.Command;
 import SignalController.SignalController;
+import SignalController.GlobalConfig;
 import okhttp3.Response;
 
 import java.util.*;
@@ -11,6 +12,7 @@ import static RoboRock.Enums.Zone.*;
 
 public class SignalMessageReceiver {
 
+    //TODO Pause
     static Map<List<String>, Command> patternMap = Map.of(
             List.of("wo bist du"), FIND,
             List.of("wohnung", "alles"), CLEAN,
@@ -20,22 +22,24 @@ public class SignalMessageReceiver {
             List.of("küche"), KUECHE,
             List.of("schlafzimmer"), SCHLAFZIMMER,
             List.of("wohnzimmer"), WOHNZIMMER,
-            List.of("flur", "bad"), FLUR
+            List.of("flur", "bad"), FLUR,
+            List.of("heute nicht", "nein", "überpringen", "aussetzen"), CANCEL_SCHEDULE
     );
 
-    public static void receive(String groupId, String body) {
+    public static void receive(String body) {
         for (List<String> list : patternMap.keySet()) {
             for (String keyWord : list) {
                 if (body.toLowerCase(Locale.ROOT).contains(keyWord)) {
-                    triggerCommand(patternMap.get(list), groupId);
+                    triggerCommand(patternMap.get(list));
                     return;
                 }
             }
         }
-        SignalController.sendMessage("Diesen Befehl kann ich nicht verstehen :/", groupId);
+        SignalController.sendMessage("Diesen Befehl kann ich nicht verstehen :/", GlobalConfig.getInstance().getSignalRockyGroup());
     }
 
-    private static void triggerCommand(Command command, String groupId) {
+    private static void triggerCommand(Command command) {
+        String groupId = GlobalConfig.getInstance().getSignalRockyGroup();
         Response response;
         if (command == FIND) {
             response = RoboRockController.find();
@@ -82,13 +86,22 @@ public class SignalMessageReceiver {
             if (response != null && response.code() == 200) {
                 SignalController.sendMessage("Okay, ich sauge nur den Flur.", groupId);
             }
+        } else if (command == CANCEL_SCHEDULE) {
+            boolean canceled = RoboRockController.stopNextScheduledRoomCleanup();
+            if (canceled) {
+                SignalController.sendMessage("Okay, ich werde heute nicht saugen.", groupId);
+            } else {
+                SignalController.sendMessage("Aktuell ist keine Reinigung geplant.", groupId);
+            }
+            return;
         } else {
-            response = null;
             SignalController.sendMessage("Kolja hat Mist gebaut und den command " + command + " nicht sauber implementiert.", groupId);
+            return;
         }
-
-        if (response != null && response.code() != 200) {
-            SignalController.sendMessage("Leider habe ich einen Fehler :(", groupId);
+        if (response == null) {
+            SignalController.sendMessage("Rocky antwortet nicht. Eventuell ist der Staubsauger ausgeschaltet.", groupId);
+        } else if (response.code() != 200) {
+            SignalController.sendMessage("Leider gibt es einen Fehler. Der Fehlercode ist " + response.code(), groupId);
         }
     }
 
