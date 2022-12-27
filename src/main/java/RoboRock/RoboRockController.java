@@ -34,7 +34,7 @@ public class RoboRockController {
 
     public static Response cleanZone(Zone zone) {
         if (stopNextScheduledRoomCleanup()) {
-            SignalController.sendMessage("Die geplante Zonenreinigung wird abgebrochen.", GlobalConfig.getInstance().getSignalRockyGroup());
+            sendSignalMessage("Die geplante Zonenreinigung wird abgebrochen.");
         }
         String rockyUrl = GlobalConfig.getInstance().getRockyUrl();
         try {
@@ -66,6 +66,7 @@ public class RoboRockController {
                     .build();
             return client.newCall(request).execute();
         } catch (Exception e) {
+            sendSignalMessage("Rocky antwortet nicht. Eventuell ist der Staubsauger ausgeschaltet.");
             FileLogger.logError(e);
             return null;
         }
@@ -78,22 +79,25 @@ public class RoboRockController {
     public static void cleanRoom() {
         DayOfWeek dayOfWeek = LocalDate.now().getDayOfWeek();
         FileLogger.logInfo("Room clean up started. We have " + dayOfWeek);
-        String signalRockyGroup = GlobalConfig.getInstance().getSignalRockyGroup();
         if (dayOfWeek == DayOfWeek.MONDAY) {
-            SignalController.sendMessage("Heute ist das Schlafzimmer an der Reihe, in einer Viertelstunde sauge ich das Schlafzimmer.", signalRockyGroup);
+            sendSignalMessage("Heute ist das Schlafzimmer an der Reihe, in einer Viertelstunde sauge ich das Schlafzimmer.");
             scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.SCHLAFZIMMER);}, 15, TimeUnit.MINUTES);
         } else if (dayOfWeek == DayOfWeek.TUESDAY) {
-            SignalController.sendMessage("Heute ist das Wohnzimmer an der Reihe, in einer Viertelstunde sauge ich das Wohnzimmer.", signalRockyGroup);
+            sendSignalMessage("Heute ist das Wohnzimmer an der Reihe, in einer Viertelstunde sauge ich das Wohnzimmer.");
             scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.WOHNZIMMER);}, 15, TimeUnit.MINUTES);
         } else if (dayOfWeek == DayOfWeek.WEDNESDAY) {
-            SignalController.sendMessage("Heute ist der Flur an der Reihe, in einer Viertelstunde sauge ich den Flur.", signalRockyGroup);
+            sendSignalMessage("Heute ist der Flur an der Reihe, in einer Viertelstunde sauge ich den Flur.");
             scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.FLUR);}, 15, TimeUnit.MINUTES);
         } else if (dayOfWeek == DayOfWeek.THURSDAY) {
-            SignalController.sendMessage("Heute ist die Küche an der Reihe, in einer Viertelstunde sauge ich die Küche.", signalRockyGroup);
+            sendSignalMessage("Heute ist die Küche an der Reihe, in einer Viertelstunde sauge ich die Küche.");
             scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.KUECHE);}, 15, TimeUnit.MINUTES);
         } else if (dayOfWeek == DayOfWeek.FRIDAY) {
-            SignalController.sendMessage("Heute ist das Arbeitszimmer an der Reihe, wärend der Mittagspause sauge ich das Arbeitszimmer.", signalRockyGroup);
+            sendSignalMessage("Heute ist das Arbeitszimmer an der Reihe, wärend der Mittagspause sauge ich das Arbeitszimmer.");
             scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.MULTIZIMMER);}, 90, TimeUnit.MINUTES);
         }
+    }
+
+    private static void sendSignalMessage(String message) {
+        SignalController.sendMessage(message, GlobalConfig.getInstance().getSignalRockyGroup());
     }
 }
