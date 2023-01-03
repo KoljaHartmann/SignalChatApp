@@ -26,8 +26,8 @@ public class MarsController {
             return new JSONObject(sb.toString());
         } catch (Exception e) {
             FileLogger.logError("Problems reading JSON from " + url, e);
+            return null;
         }
-        return new JSONObject();
     }
 
 }

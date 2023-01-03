@@ -17,12 +17,12 @@ public class JsonEvaluator {
     private static JSONObject currentJson;
     private static final GlobalConfig globalConfig = GlobalConfig.getInstance();
 
-    private static void evaluateSendingMessage(JSONObject lastJson, JSONObject currentJson) {
+    private static void evaluateSendingMessage(JSONObject lastJsonObject, JSONObject currentJsonObject) {
         String message = "";
-        Phases currentPhase = getPhase(currentJson);
-        Phases lastPhase = getPhase(lastJson);
-        final ArrayList<String> currentPlayers = getActivePlayers(currentJson);
-        final ArrayList<String> lastActivePlayers = getActivePlayers(lastJson);
+        Phases currentPhase = getPhase(currentJsonObject);
+        Phases lastPhase = getPhase(lastJsonObject);
+        final ArrayList<String> currentPlayers = getActivePlayers(currentJsonObject);
+        final ArrayList<String> lastActivePlayers = getActivePlayers(lastJsonObject);
 
         if (globalConfig.getMarsGameFinished()) {
             return;
@@ -55,8 +55,10 @@ public class JsonEvaluator {
                 }
             }
         } else if (currentPhase.equals(END)) {
-            message = getWinnerMessage(currentJson);
+            message = getWinnerMessage(currentJsonObject);
             globalConfig.setMarsGameFinished(true);
+            lastJson = null;
+            currentJson = null;
         }
         if (!message.isEmpty() && (globalConfig.getSignalMarsChatGroup() != null)) {
             SignalController.sendMessage(message, globalConfig.getSignalMarsChatGroup());
@@ -135,10 +137,11 @@ public class JsonEvaluator {
             System.out.println("CurrentUrl: [" + globalConfig.getGameUrl() + "]");
 
             currentJson = MarsController.readMarsJson(globalConfig.getGameUrl());
-            if (currentJson == null) {
-                System.out.println("No Json found");
+            if (currentJson == null || currentJson.isEmpty()) {
+                FileLogger.logInfo("No Json found");
+                return;
             } else if (lastJson == null || lastJson.isEmpty()) {
-                System.out.println("First call to Mars");
+                FileLogger.logInfo("First call to Mars");
             } else {
                 System.out.println("Phase: " + JsonEvaluator.getPhase(currentJson) + ",  lastActivePlayers: " + JsonEvaluator.getActivePlayers(lastJson) + " currentPlayers: " + JsonEvaluator.getActivePlayers(currentJson));
                 JsonEvaluator.evaluateSendingMessage(lastJson, currentJson);
