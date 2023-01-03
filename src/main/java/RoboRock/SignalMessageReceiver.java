@@ -23,7 +23,7 @@ public class SignalMessageReceiver {
             List.of("schlafzimmer"), SCHLAFZIMMER,
             List.of("wohnzimmer"), WOHNZIMMER,
             List.of("flur", "bad"), FLUR,
-            List.of("heute nicht", "nein", "überpringen", "aussetzen"), CANCEL_SCHEDULE
+            List.of("heute nicht", "nein", "überpringen", "aussetzen", "lass mal"), CANCEL_SCHEDULE
     );
 
     public static void receive(String body) {
