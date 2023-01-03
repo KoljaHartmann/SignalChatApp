@@ -1,11 +1,12 @@
 package TerraformingMars;
 
+import SignalController.FileLogger;
 import SignalController.GlobalConfig;
 import SignalController.SignalController;
-import SignalController.FileLogger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.time.Instant;
 import java.util.ArrayList;
 
 import static TerraformingMars.Phases.*;
@@ -13,6 +14,7 @@ import static TerraformingMars.Phases.*;
 public class JsonEvaluator {
 
     private static String lastUsedUrl = "";
+    private static long lastPingToMars = 0;
     private static JSONObject lastJson;
     private static JSONObject currentJson;
     private static final GlobalConfig globalConfig = GlobalConfig.getInstance();
@@ -127,6 +129,11 @@ public class JsonEvaluator {
     }
 
     public static void processGameState() {
+        if (lastPingToMars >= Instant.now().getEpochSecond()) {
+            FileLogger.logWarning("Avoiding DDOS. Last ping to mars was " + Instant.ofEpochSecond(lastPingToMars));
+            return;
+        }
+        lastPingToMars = Instant.now().getEpochSecond();
         try {
             if (!lastUsedUrl.equals(globalConfig.getGameUrl())) {
                 System.out.println("GameUrl Changed. resetting lastJson");
