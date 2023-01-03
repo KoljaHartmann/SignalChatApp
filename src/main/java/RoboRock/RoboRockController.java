@@ -6,6 +6,7 @@ import SignalController.GlobalConfig;
 import SignalController.SignalController;
 import okhttp3.*;
 
+import java.io.File;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.concurrent.Executors;
@@ -34,6 +35,7 @@ public class RoboRockController {
 
     public static Response cleanZone(Zone zone) {
         if (stopNextScheduledRoomCleanup()) {
+            //TODO das muss anders
             sendSignalMessage("Die geplante Zonenreinigung wird abgebrochen.");
         }
         String rockyUrl = GlobalConfig.getInstance().getRockyUrl();
@@ -66,19 +68,22 @@ public class RoboRockController {
                     .build();
             return client.newCall(request).execute();
         } catch (Exception e) {
-            sendSignalMessage("Rocky antwortet nicht. Eventuell ist der Staubsauger ausgeschaltet.");
             FileLogger.logError(e);
             return null;
         }
     }
 
     public static boolean stopNextScheduledRoomCleanup() {
-        return scheduledRoomCleanup != null && scheduledRoomCleanup.cancel(false);
+        return scheduledRoomCleanup != null && scheduledRoomCleanup.cancel(true);
     }
 
     public static void cleanRoom() {
         DayOfWeek dayOfWeek = LocalDate.now().getDayOfWeek();
         FileLogger.logInfo("Room clean up started. We have " + dayOfWeek);
+        if (stopNextScheduledRoomCleanup()) {
+            FileLogger.logWarning("Cleanup mixup.");
+        }
+        //TODO die signal message kam nicht an
         if (dayOfWeek == DayOfWeek.MONDAY) {
             sendSignalMessage("Heute ist das Schlafzimmer an der Reihe, in einer Viertelstunde sauge ich das Schlafzimmer.");
             scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.SCHLAFZIMMER);}, 15, TimeUnit.MINUTES);

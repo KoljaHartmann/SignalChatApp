@@ -99,7 +99,7 @@ public class SignalMessageReceiver {
             return;
         }
         if (response == null) {
-            SignalController.sendMessage("Leider gibt es einen Fehler.", groupId);
+            SignalController.sendMessage("Rocky antwortet nicht. Eventuell ist der Staubsauger ausgeschaltet.", groupId);
         } else if (response.code() != 200) {
             SignalController.sendMessage("Leider gibt es einen Fehler. Der Fehlercode ist " + response.code(), groupId);
         }

@@ -28,6 +28,7 @@ public class Main {
         int currentSeconds = LocalTime.now().toSecondOfDay();
         int scheduledSeconds = 38700;
         int delay = scheduledSeconds > (currentSeconds + 5) ? scheduledSeconds - currentSeconds : (scheduledSeconds + 86400) - currentSeconds;
+        //TODO nächste Reinigung ins file loggen
         System.out.println("Current time in seconds: " + currentSeconds + ". Scheduling next room clean up in " + delay + " seconds.");
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
                 RoboRockController::cleanRoom, delay, 86400, TimeUnit.SECONDS
@@ -35,6 +36,7 @@ public class Main {
 
         // Check if Signal and Mars Threads are still alive
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
+                //TODO das irgendwie save machen, erstmal loggen, checken was da passiert und so.
                 () -> {
                     try {
                         System.out.println("Current state of signal thread:\n" + signalThread[0] + "\n" + signalThread[0].get() + "\n" + signalThread[0].getDelay(TimeUnit.MILLISECONDS));
