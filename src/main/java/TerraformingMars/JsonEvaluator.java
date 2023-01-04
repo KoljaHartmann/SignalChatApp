@@ -133,16 +133,13 @@ public class JsonEvaluator {
             FileLogger.logWarning("Avoiding DDOS. Last ping to mars was " + Instant.ofEpochSecond(lastPingToMars));
             return;
         }
-        lastPingToMars = Instant.now().getEpochSecond();
         try {
             if (!lastUsedUrl.equals(globalConfig.getGameUrl())) {
                 System.out.println("GameUrl Changed. resetting lastJson");
                 lastJson = null;
             }
             lastUsedUrl = globalConfig.getGameUrl();
-
             System.out.println("CurrentUrl: [" + globalConfig.getGameUrl() + "]");
-
             currentJson = MarsController.readMarsJson(globalConfig.getGameUrl());
             if (currentJson == null || currentJson.isEmpty()) {
                 FileLogger.logInfo("No Json found");
@@ -154,11 +151,13 @@ public class JsonEvaluator {
                 JsonEvaluator.evaluateSendingMessage(lastJson, currentJson);
             }
             lastJson = currentJson;
+            lastPingToMars = Instant.now().getEpochSecond();
         } catch (Throwable e) {
             FileLogger.logError("Error in the Mars Json Check:", e);
             FileLogger.logError("lastJson: " + lastJson);
             FileLogger.logError("currentJson" + currentJson);
             lastJson = currentJson;
+            lastPingToMars = Instant.now().getEpochSecond();
         }
     }
 
