@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.time.Instant;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 import static TerraformingMars.Phases.*;
@@ -19,6 +20,7 @@ public class JsonEvaluator {
     private static JSONObject currentJson;
     private static final GlobalConfig globalConfig = GlobalConfig.getInstance();
 
+    //TODO Enum zum Aktuellen Zustand statt Chatmessagechaos
     private static void evaluateSendingMessage(JSONObject lastJsonObject, JSONObject currentJsonObject) {
         String message = "";
         Phases currentPhase = getPhase(currentJsonObject);
@@ -26,7 +28,7 @@ public class JsonEvaluator {
         final ArrayList<String> currentPlayers = getActivePlayers(currentJsonObject);
         final ArrayList<String> lastActivePlayers = getActivePlayers(lastJsonObject);
 
-        if (globalConfig.getMarsGameFinished()) {
+        if (MarsController.getMarsGameFinished()) {
             return;
         } else if (currentPhase.equals(DRAFTING)) {
             if (lastActivePlayers.size() > 1 && currentPlayers.size() == 1) {
@@ -58,13 +60,38 @@ public class JsonEvaluator {
             }
         } else if (currentPhase.equals(END)) {
             message = getWinnerMessage(currentJsonObject);
-            globalConfig.setMarsGameFinished(true);
+            MarsController.setMarsGameFinished(true);
             lastJson = null;
             currentJson = null;
         }
         if (!message.isEmpty() && (globalConfig.getSignalMarsChatGroup() != null)) {
             SignalController.sendMessage(message, globalConfig.getSignalMarsChatGroup());
+            if (currentPlayers.size() == 1) {
+                MarsController.storeActivePlayer(currentPlayers.get(0));
+            } else {
+                MarsController.storeActivePlayer("");
+            }
+        } else {
+            if(reminderPingReasonable()) {
+                if (!MarsController.getActivePlayer().isEmpty()) {
+                    SignalController.sendMessage(ChatMacros.getReminderPing(MarsController.getActivePlayer()), globalConfig.getSignalMarsChatGroup());
+                    MarsController.storePingTime();
+                } else {
+                    //TODO mehrere Spieler
+                }
+            }
         }
+    }
+
+    private static boolean reminderPingReasonable() {
+        //ping again after 5 hours
+        if (LocalTime.now().getHour() > 7) {
+            long now = Instant.now().getEpochSecond();
+            if (now - MarsController.getLastPingTime() > 18000) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static ArrayList<String> getActivePlayers(JSONObject jsonObject) {
@@ -130,7 +157,7 @@ public class JsonEvaluator {
 
     public static void processGameState() {
         if (lastPingToMars >= Instant.now().getEpochSecond()) {
-            FileLogger.logWarning("Avoiding DDOS. Last ping to mars was " + Instant.ofEpochSecond(lastPingToMars));
+            FileLogger.logInfo("Avoiding DDOS. Last ping to mars was " + Instant.ofEpochSecond(lastPingToMars));
             return;
         }
         try {

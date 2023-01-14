@@ -42,6 +42,15 @@ public class ChatMacros {
                     "Dröft"
             ));
 
+    private static final ArrayList<String> reminderMessageList = new ArrayList<>(
+            Arrays.asList(
+                    "Darf ich Sie an Ihren Zug erinnern?",
+                    "Ich möchte Sie höflichst daran erinnern, dass Sie am Zug sind.",
+                    "Ihr Tag ist stehts so stressig, vielleicht möchten Sie sich mit einem Zug in Terraforming Mars erfreuen?",
+                    "Ein ausgesprochen schwieriger Zug, nicht wahr?",
+                    "Wenn ich Ihnen einen Tipp geben darf, ich würde empfehlen zu passen."
+            ));
+
     private static final Random rand = new Random();
 
     public static String getPlayerName(String player) {
@@ -75,5 +84,9 @@ public class ChatMacros {
 
     public static String getDrawCelebrations(String winner, String secondPlace) {
         return "Unglaublich. Ein Gleichstand zwischen " + getPlayerName(winner) + " und " + getPlayerName(secondPlace) + "! Herzlichen Glückwunsch!";
+    }
+
+    public static String getReminderPing(String player) {
+        return "Ping @" + getPlayerName(player) + ". " + reminderMessageList.get(rand.nextInt(reminderMessageList.size()));
     }
 }
