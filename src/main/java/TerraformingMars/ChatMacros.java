@@ -25,9 +25,11 @@ public class ChatMacros {
             Arrays.asList(
                     "Karten oder 'n Stück Holz!",
                     "Karte her, sonst Taschen leer!",
+                    "Da brat' mir einer 'nen Storch und die Beine recht knusprig! Los, spiel!"
                     "Kauf deine verdammten Karten!",
                     "Weniger Eierschaukeln, mehr Karten kaufen!",
                     "Nur die Karten kommen in' Garten!",
+                    "Ich muss dich leider informieren: Vom Warten werden die Karten nicht besser!",
                     "Niemand hat die Absicht, für dich deine Karten zu kaufen!",
                     "Dies sind keine Fake News!",
                     "Was letzte Preis?"
@@ -38,6 +40,7 @@ public class ChatMacros {
                     "Ping @all. Es darf gedraftet werden.",
                     "Ping @all. Bitte draften Sie jetzt.",
                     "Ping @all. Eine neue Draftrunde startet.",
+                    "Euer Volk wünscht einen Draft!",
                     "Draften",
                     "Dröft"
             ));
@@ -45,10 +48,12 @@ public class ChatMacros {
     private static final ArrayList<String> reminderMessageList = new ArrayList<>(
             Arrays.asList(
                     "Darf ich Sie an Ihren Zug erinnern?",
+                    "Ich mache dir ein Angebot, das du nicht ablehnen kannst. Mach deinen Zug. Oder jemand wird sich darum kümmern, capice?",
                     "Ich möchte Sie höflichst daran erinnern, dass Sie am Zug sind.",
                     "Ihr Tag ist stehts so stressig, vielleicht möchten Sie sich mit einem Zug in Terraforming Mars erfreuen?",
                     "Ein ausgesprochen schwieriger Zug, nicht wahr?",
-                    "Wenn ich Ihnen einen Tipp geben darf, ich würde empfehlen zu passen."
+                    "Wenn ich Ihnen einen Tipp geben darf, ich würde empfehlen zu passen.",
+                    "'Gut Ding will Weile haben', sagt der Volksmund! Nur allzu lang verweilen sollten Sie bei Ihrem Zug nicht!"
             ));
 
     private static final Random rand = new Random();
