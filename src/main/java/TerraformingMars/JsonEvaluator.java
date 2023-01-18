@@ -84,12 +84,9 @@ public class JsonEvaluator {
     }
 
     private static boolean reminderPingReasonable() {
-        //ping again after 5 hours
-        if (LocalTime.now().getHour() > 7) {
-            long now = Instant.now().getEpochSecond();
-            if (now - MarsController.getLastPingTime() > 18000) {
-                return true;
-            }
+        //ping again after 5 1/2 hours
+        if (LocalTime.now().getHour() > 8) {
+            return Instant.now().getEpochSecond() - MarsController.getLastPingTime() > 19800;
         }
         return false;
     }

@@ -25,7 +25,7 @@ public class ChatMacros {
             Arrays.asList(
                     "Karten oder 'n Stück Holz!",
                     "Karte her, sonst Taschen leer!",
-                    "Da brat' mir einer 'nen Storch und die Beine recht knusprig! Los, spiel!"
+                    "Da brat' mir einer 'nen Storch und die Beine recht knusprig! Los, spiel!",
                     "Kauf deine verdammten Karten!",
                     "Weniger Eierschaukeln, mehr Karten kaufen!",
                     "Nur die Karten kommen in' Garten!",
