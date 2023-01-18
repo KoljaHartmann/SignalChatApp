@@ -1,26 +1,36 @@
 package TerraformingMars;
 
+import SignalController.FileLogger;
 import SignalController.GlobalConfig;
 import SignalController.SignalController;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.time.Instant;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 import static TerraformingMars.Phases.*;
-import static TerraformingMars.Phases.RESEARCH;
 
 public class JsonEvaluator {
 
-    public static void evaluateSendingMessage(JSONObject lastJson, JSONObject currentJson) {
-        String message = "";
-        Phases currentPhase = getPhase(currentJson);
-        Phases lastPhase = getPhase(lastJson);
-        final ArrayList<String> currentPlayers = getActivePlayers(currentJson);
-        final ArrayList<String> lastActivePlayers = getActivePlayers(lastJson);
-        GlobalConfig globalConfig = GlobalConfig.getInstance();
+    private static String lastUsedUrl = "";
+    private static long lastPingToMars = 0;
+    private static JSONObject lastJson;
+    private static JSONObject currentJson;
+    private static final GlobalConfig globalConfig = GlobalConfig.getInstance();
 
-        if (currentPhase.equals(DRAFTING)) {
+    //TODO Enum zum Aktuellen Zustand statt Chatmessagechaos
+    private static void evaluateSendingMessage(JSONObject lastJsonObject, JSONObject currentJsonObject) {
+        String message = "";
+        Phases currentPhase = getPhase(currentJsonObject);
+        Phases lastPhase = getPhase(lastJsonObject);
+        final ArrayList<String> currentPlayers = getActivePlayers(currentJsonObject);
+        final ArrayList<String> lastActivePlayers = getActivePlayers(lastJsonObject);
+
+        if (MarsController.getMarsGameFinished()) {
+            return;
+        } else if (currentPhase.equals(DRAFTING)) {
             if (lastActivePlayers.size() > 1 && currentPlayers.size() == 1) {
                 message = ChatMacros.getSimplePing(currentPlayers.get(0));
             } else if (lastActivePlayers.size() == 1 && currentPlayers.size() > 1) {
@@ -48,13 +58,43 @@ public class JsonEvaluator {
                     message = ChatMacros.finalGreeneryPing(currentPlayers.get(0));
                 }
             }
+        } else if (currentPhase.equals(END)) {
+            message = getWinnerMessage(currentJsonObject);
+            MarsController.setMarsGameFinished(true);
+            lastJson = null;
+            currentJson = null;
         }
-        if (!message.isEmpty() && (globalConfig.getSignalSendGroup() != null)) {
-            SignalController.sendMessage(message, globalConfig.getSignalSendGroup());
+        if (!message.isEmpty() && (globalConfig.getSignalMarsChatGroup() != null)) {
+            SignalController.sendMessage(message, globalConfig.getSignalMarsChatGroup());
+            if (currentPlayers.size() == 1) {
+                MarsController.storeActivePlayer(currentPlayers.get(0));
+            } else {
+                MarsController.storeActivePlayer("");
+            }
+        } else {
+            if(reminderPingReasonable()) {
+                if (!MarsController.getActivePlayer().isEmpty()) {
+                    SignalController.sendMessage(ChatMacros.getReminderPing(MarsController.getActivePlayer()), globalConfig.getSignalMarsChatGroup());
+                    MarsController.storePingTime();
+                } else {
+                    //TODO mehrere Spieler
+                }
+            }
         }
     }
 
-    public static ArrayList<String> getActivePlayers(JSONObject jsonObject) {
+    private static boolean reminderPingReasonable() {
+        //ping again after 5 hours
+        if (LocalTime.now().getHour() > 7) {
+            long now = Instant.now().getEpochSecond();
+            if (now - MarsController.getLastPingTime() > 18000) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static ArrayList<String> getActivePlayers(JSONObject jsonObject) {
         final ArrayList<String> activePlayers = new ArrayList<>();
         final JSONArray players = (JSONArray) jsonObject.get("players");
 
@@ -64,15 +104,88 @@ public class JsonEvaluator {
             if ((boolean) timer.get("running")) {
                 activePlayers.add((String) player.get("name"));
             }
-
         }
         return activePlayers;
     }
 
-    public static Phases getPhase(JSONObject jsonObject) {
+    private static String getWinnerMessage(JSONObject jsonObject) {
+        final JSONArray players = (JSONArray) jsonObject.get("players");
+        String winner = "";
+        int winnerVP = 0;
+        int winnerMC = 0;
+        boolean tieBreakerWin = false;
+        boolean doubleTie = false;
+        String secondPlace = "";
+
+        for (Object playerObject : players) {
+            final JSONObject player = (JSONObject) playerObject;
+            final JSONObject pointsBreakdown = (JSONObject) player.get("victoryPointsBreakdown");
+            int playerVP = (int) pointsBreakdown.get("total");
+            if (playerVP > winnerVP) {
+                winner = (String) player.get("name");
+                winnerVP = playerVP;
+                winnerMC = (int) player.get("megaCredits");
+                tieBreakerWin = false;
+                doubleTie = false;
+            } else if (playerVP == winnerVP) {
+                int megaCredits = (int) player.get("megaCredits");
+                if (megaCredits > winnerMC) {
+                    winner = (String) player.get("name");
+                    winnerMC = (int) player.get("megaCredits");
+                    tieBreakerWin = true;
+                    doubleTie = false;
+                } else if (megaCredits == winnerMC) {
+                    secondPlace = (String) player.get("name");
+                    winnerMC = (int) player.get("megaCredits");
+                    tieBreakerWin = true;
+                    doubleTie = true;
+                }
+            }
+        }
+        if (doubleTie) {
+            return ChatMacros.getDrawCelebrations(winner, secondPlace);
+        } else {
+            return ChatMacros.getWinnerCelebrations(winner, winnerVP, tieBreakerWin);
+        }
+    }
+
+    private static Phases getPhase(JSONObject jsonObject) {
         final JSONObject game = (JSONObject) jsonObject.get("game");
         final String phase = (String) game.get("phase");
         return Phases.valueOf(phase.toUpperCase());
+    }
+
+    public static void processGameState() {
+        if (lastPingToMars >= Instant.now().getEpochSecond()) {
+            FileLogger.logInfo("Avoiding DDOS. Last ping to mars was " + Instant.ofEpochSecond(lastPingToMars));
+            return;
+        }
+        try {
+            if (!lastUsedUrl.equals(globalConfig.getGameUrl())) {
+                System.out.println("GameUrl Changed. resetting lastJson");
+                lastJson = null;
+            }
+            lastUsedUrl = globalConfig.getGameUrl();
+            System.out.println("CurrentUrl: [" + globalConfig.getGameUrl() + "]");
+            currentJson = MarsController.readMarsJson(globalConfig.getGameUrl());
+            if (currentJson == null || currentJson.isEmpty()) {
+                FileLogger.logInfo("No Json found");
+                return;
+            } else if (lastJson == null || lastJson.isEmpty()) {
+                FileLogger.logInfo("First call to Mars");
+            } else {
+                System.out.println("Phase: " + JsonEvaluator.getPhase(currentJson) + ",  lastActivePlayers: " + JsonEvaluator.getActivePlayers(lastJson) + " currentPlayers: " + JsonEvaluator.getActivePlayers(currentJson));
+                JsonEvaluator.evaluateSendingMessage(lastJson, currentJson);
+            }
+            lastJson = currentJson;
+            lastPingToMars = Instant.now().getEpochSecond();
+        } catch (Throwable e) {
+            FileLogger.logError("Error in the Mars Json Check:", e);
+            FileLogger.logError("lastJson: " + lastJson);
+            FileLogger.logError("currentJson" + currentJson);
+            lastJson = currentJson;
+            lastPingToMars = Instant.now().getEpochSecond();
+        }
     }
 
 }

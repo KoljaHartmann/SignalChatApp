@@ -1,27 +1,39 @@
 package SignalController;
 
+import TerraformingMars.MarsController;
+
 public class GlobalConfig {
 
     private final static String SIGNAL_USERNAME_ENV = "SIGNAL_USERNAME";
-    private final static String SIGNAL_SEND_GROUP_ENV = "SIGNAL_SEND_GROUP";
-    private final static String SIGNAL_CONFIG_GROUP_ENV = "SIGNAL_CONFIG_GROUP";
     private final static String SIGNAL_CLI_PATH_ENV = "SIGNAL_CLI_PATH";
+
+    // Terraforming Mars
+    private final static String SIGNAL_MARS_CHAT_GROUP_ENV = "SIGNAL_MARS_CHAT_GROUP";
+    private final static String SIGNAL_MARS_CONFIG_GROUP_ENV = "SIGNAL_MARS_CONFIG_GROUP";
     private final static String TM_GAME_URL_ENV = "TM_GAME_URL";
+
+    // RoboRock
+    private final static String SIGNAL_ROCKY_GROUP_ENV = "SIGNAL_ROCKY_GROUP_ENV";
+    private final static String ROCKY_URL_ENV = "ROCKY_URL";
 
     private static GlobalConfig instance;
 
     private String gameUrl;
     private final String signalUsername;
-    private final String signalSendGroup;
-    private final String signalConfigGroup;
+    private final String signalMarsChatGroup;
+    private final String signalMarsConfigGroup;
     private final String signalCliPath;
+    private final String signalRockyGroup;
+    private final String rockyUrl;
 
     private GlobalConfig() {
         this.gameUrl = System.getenv(TM_GAME_URL_ENV) != null ? System.getenv(TM_GAME_URL_ENV) : "";
         this.signalUsername = System.getenv(SIGNAL_USERNAME_ENV);
-        this.signalSendGroup = System.getenv(SIGNAL_SEND_GROUP_ENV);
-        this.signalConfigGroup = System.getenv(SIGNAL_CONFIG_GROUP_ENV);
+        this.signalMarsChatGroup = System.getenv(SIGNAL_MARS_CHAT_GROUP_ENV);
+        this.signalMarsConfigGroup = System.getenv(SIGNAL_MARS_CONFIG_GROUP_ENV);
         this.signalCliPath = System.getenv(SIGNAL_CLI_PATH_ENV);
+        this.signalRockyGroup = System.getenv(SIGNAL_ROCKY_GROUP_ENV);
+        this.rockyUrl = System.getenv(ROCKY_URL_ENV);
         System.out.println("Config Created: \n" + this);
     }
 
@@ -38,18 +50,27 @@ public class GlobalConfig {
 
     public void setGameUrl(String gameUrl) {
         this.gameUrl = gameUrl;
+        MarsController.setMarsGameFinished(false);
     }
 
-    public String getSignalSendGroup() {
-        return signalSendGroup;
+    public String getSignalMarsChatGroup() {
+        return signalMarsChatGroup;
     }
 
     public String getSignalUsername() {
         return signalUsername;
     }
 
-    public String getSignalConfigGroup() {
-        return signalConfigGroup;
+    public String getSignalMarsConfigGroup() {
+        return signalMarsConfigGroup;
+    }
+
+    public String getSignalRockyGroup() {
+        return signalRockyGroup;
+    }
+
+    public String getRockyUrl() {
+        return rockyUrl;
     }
 
     public String getSignalCliPath() {
@@ -58,11 +79,13 @@ public class GlobalConfig {
 
     public String toString() {
         return String.format("GlobalConfig: " +
-                "\n\t URL: [%s]" +
+                "\n\t Mars URL: [%s]" +
                 "\n\t Signal Cli Path [%s]" +
                 "\n\t Signal Username [%s]" +
-                "\n\t Signal Target [%s]" +
-                "\n\t Signal Config [%s]", gameUrl, signalCliPath, signalUsername, signalSendGroup, signalConfigGroup);
+                "\n\t Rocky Chat Group [%s]" +
+                "\n\t Rocky Url [%s]" +
+                "\n\t Mars Chat Group [%s]" +
+                "\n\t Mars Config Group[%s]", gameUrl, signalCliPath, signalUsername, signalRockyGroup, rockyUrl, signalMarsChatGroup, signalMarsConfigGroup);
     }
 
 }

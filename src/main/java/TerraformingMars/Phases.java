@@ -1,11 +1,11 @@
 package TerraformingMars;
 
 public enum  Phases {
-    //TODO Game.Phases.INITIAL_DRAFTING
 
     DRAFTING,
     RESEARCH,
     ACTION,
+    END,
     PRODUCTION;
 
     @Override

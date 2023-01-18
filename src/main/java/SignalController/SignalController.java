@@ -1,7 +1,5 @@
 package SignalController;
 
-import TerraformingMars.SignalMessageReceiver;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -28,13 +26,13 @@ public class SignalController {
             cmdList.add(groupId);
 
             try {
-                Process proc = Runtime.getRuntime().exec(cmdList.toArray(new String[0]));
+                Process process = Runtime.getRuntime().exec(cmdList.toArray(new String[0]));
 
                 BufferedReader stdError = new BufferedReader(new
-                        InputStreamReader(proc.getErrorStream()));
+                        InputStreamReader(process.getErrorStream()));
 
                 BufferedReader stdInput = new BufferedReader(new
-                        InputStreamReader(proc.getInputStream()));
+                        InputStreamReader(process.getInputStream()));
                 // Read the output from the command
                 String line;
                 System.out.println("INFO");
@@ -47,11 +45,11 @@ public class SignalController {
                     System.out.println(line);
                 }
 
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                FileLogger.logError(e);
             }
         } else {
-            System.out.println("ERROR: Unable to send message. Mandatory globalConfig Values not set. \n\t" + globalConfig);
+            FileLogger.logError("ERROR: Unable to send message. Mandatory globalConfig Values not set. \n\t" + globalConfig);
         }
     }
 
@@ -65,37 +63,34 @@ public class SignalController {
                 globalConfig.getSignalUsername());
 
         try {
-            if(globalConfig.getSignalConfigGroup() != null && !globalConfig.getSignalConfigGroup().isEmpty()) {
-                Runtime.getRuntime().exec(baseCommand + globalConfig.getSignalConfigGroup());
+            if(globalConfig.getSignalMarsConfigGroup() != null && !globalConfig.getSignalMarsConfigGroup().isEmpty()) {
+                Runtime.getRuntime().exec(baseCommand + globalConfig.getSignalMarsConfigGroup());
             }
-            if(globalConfig.getSignalSendGroup() != null && !globalConfig.getSignalSendGroup().isEmpty()) {
-                Runtime.getRuntime().exec(baseCommand + globalConfig.getSignalSendGroup());
+            if(globalConfig.getSignalMarsChatGroup() != null && !globalConfig.getSignalMarsChatGroup().isEmpty()) {
+                Runtime.getRuntime().exec(baseCommand + globalConfig.getSignalMarsChatGroup());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            FileLogger.logError(e);
         }
 
 
     }
 
-    synchronized public static void receiveMessages() {
-        System.out.println("receiving messages");
+    synchronized public static void processIncomingMessages() {
+        try {
+            System.out.println("receiving messages");
 
-        GlobalConfig globalConfig = GlobalConfig.getInstance();
-        if (globalConfig.getSignalCliPath() != null
-                && globalConfig.getSignalUsername() != null) {
+            GlobalConfig globalConfig = GlobalConfig.getInstance();
+            if (globalConfig.getSignalCliPath() != null
+                    && globalConfig.getSignalUsername() != null) {
 
-            String command = String.format("%s -u %s receive",
-                    globalConfig.getSignalCliPath(),
-                    globalConfig.getSignalUsername());
+                String command = String.format("%s -u %s receive",
+                        globalConfig.getSignalCliPath(),
+                        globalConfig.getSignalUsername());
 
-            try {
-                Process proc = Runtime.getRuntime().exec(command);
+                Process process = Runtime.getRuntime().exec(command);
                 BufferedReader stdInput = new BufferedReader(new
-                        InputStreamReader(proc.getInputStream()));
-
-                BufferedReader stdError = new BufferedReader(new
-                        InputStreamReader(proc.getErrorStream()));
+                        InputStreamReader(process.getInputStream()));
 
                 // Read the output from the command
                 String line;
@@ -120,35 +115,27 @@ public class SignalController {
                         groupId = line.replace("Id:", "").trim();
                         groupFound = false;
                     }
-
                     if (line.isEmpty()) {
                         handleIncomingMessage(groupId, body);
                         groupId = null;
                         body = null;
                     }
-
                     System.out.println(line);
-
                 }
-
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+        } catch (Throwable e) {
+            FileLogger.logError(e);
         }
-
     }
 
     static private void handleIncomingMessage(String groupId, String body) {
         GlobalConfig globalConfig = GlobalConfig.getInstance();
-
         if (groupId != null && body != null) {
-            if(groupId.equals(globalConfig.getSignalConfigGroup())) {
-                SignalMessageReceiver.receive(groupId, body);
-            } else {
-                // TODO
+            if(groupId.equals(globalConfig.getSignalMarsConfigGroup())) {
+                TerraformingMars.SignalMessageReceiver.receive(groupId, body);
+            } else if (groupId.equals(globalConfig.getSignalRockyGroup())){
+                RoboRock.SignalMessageReceiver.receive(body);
             }
-        } else {
-            // TODO
         }
     }
 }
