@@ -2,20 +2,19 @@ package SignalController;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.*;
 
 public class FileLogger {
 
     private static final Logger logger = Logger.getLogger(FileLogger.class.getName());
-    private static DayOfWeek dayOfWeek;
+    private static LocalDate localDate;
 
     private static void checkLogger(String message) {
         System.out.println(message);
-        if (logger.getHandlers().length < 1 || !LocalDate.now().getDayOfWeek().equals(dayOfWeek)) {
+        if (logger.getHandlers().length < 1 || !LocalDate.now().equals(localDate)) {
             initLogger();
         }
     }
@@ -23,8 +22,8 @@ public class FileLogger {
 
     private static void initLogger() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH_mm_ss");
-        LocalDate now = LocalDate.now();
-        dayOfWeek = now.getDayOfWeek();
+        LocalDateTime now = LocalDateTime.now();
+        localDate = now.toLocalDate();
         try {
             FileHandler fileHandler = new FileHandler(System.getProperty("user.dir")
                     + "/Log/" + now.format(formatter) + ".log");
@@ -78,7 +77,7 @@ public class FileLogger {
             if (thrown == null) {
                 return record.getLevel()
                         + whiteSpace
-                        + LocalTime.now().format(formatter)
+                        + LocalDateTime.now().format(formatter)
                         + " || "
                         + record.getMessage() + "\n";
             } else {
@@ -86,7 +85,7 @@ public class FileLogger {
                 thrown.printStackTrace(new PrintWriter(sw));
                 return record.getLevel()
                         + whiteSpace
-                        + LocalTime.now().format(formatter)
+                        + LocalDateTime.now().format(formatter)
                         + " || "
                         + record.getMessage() + "\n"
                         + "        "
