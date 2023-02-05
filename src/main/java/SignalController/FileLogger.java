@@ -3,22 +3,31 @@ package SignalController;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.logging.*;
 
 public class FileLogger {
 
-    private static final Logger logger = Logger.getLogger(FileLogger.class
-            .getName());
+    private static final Logger logger = Logger.getLogger(FileLogger.class.getName());
+    private static DayOfWeek dayOfWeek;
+
+    private static void checkLogger(String message) {
+        System.out.println(message);
+        if (logger.getHandlers().length < 1 || !LocalDate.now().getDayOfWeek().equals(dayOfWeek)) {
+            initLogger();
+        }
+    }
+
 
     private static void initLogger() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH_mm_ss");
-        Date time = new GregorianCalendar().getTime();
+        LocalDate now = LocalDate.now();
+        dayOfWeek = now.getDayOfWeek();
         try {
             FileHandler fileHandler = new FileHandler(System.getProperty("user.dir")
-                    + "/Log/" + dateFormat.format(time) + ".log");
+                    + "/Log/" + dateFormat.format(now) + ".log");
             fileHandler.setFormatter(new FileFormatter());
             logger.addHandler(fileHandler);
         } catch (Exception e) {
@@ -27,43 +36,28 @@ public class FileLogger {
     }
 
     public static void logInfo(String message) {
-        System.out.println(message);
-        if (logger.getHandlers().length < 1) {
-            initLogger();
-        }
+        checkLogger(message);
         logger.info(message);
     }
 
     public static void logWarning(String message) {
-        System.out.println(message);
-        if (logger.getHandlers().length < 1) {
-            initLogger();
-        }
+        checkLogger(message);
         logger.warning(message);
     }
 
     public static void logError(String message) {
-        System.out.println(message);
-        if (logger.getHandlers().length < 1) {
-            initLogger();
-        }
+        checkLogger(message);
         logger.severe(message);
     }
 
     public static void logError(String message, Throwable e) {
-        System.out.println(message);
-        if (logger.getHandlers().length < 1) {
-            initLogger();
-        }
+        checkLogger(message);
         logger.log(Level.SEVERE, message, e);
         e.printStackTrace();
     }
 
     public static void logError(Throwable e) {
-        System.out.println(e.getMessage());
-        if (logger.getHandlers().length < 1) {
-            initLogger();
-        }
+        checkLogger(e.getMessage());
         logger.log(Level.SEVERE, e.getMessage(), e);
         e.printStackTrace();
     }
@@ -72,8 +66,6 @@ public class FileLogger {
         @Override
         public String format(LogRecord record) {
             SimpleDateFormat logTime = new SimpleDateFormat("dd.MM HH:mm:ss");
-            Calendar calendar = new GregorianCalendar();
-            calendar.setTimeInMillis(record.getMillis());
             Throwable thrown = record.getThrown();
             String whiteSpace;
             if (record.getLevel().equals(Level.INFO)) {
@@ -86,7 +78,7 @@ public class FileLogger {
             if (thrown == null) {
                 return record.getLevel()
                         + whiteSpace
-                        + logTime.format(calendar.getTime())
+                        + logTime.format(LocalTime.now())
                         + " || "
                         + record.getMessage() + "\n";
             } else {
@@ -94,7 +86,7 @@ public class FileLogger {
                 thrown.printStackTrace(new PrintWriter(sw));
                 return record.getLevel()
                         + whiteSpace
-                        + logTime.format(calendar.getTime())
+                        + logTime.format(LocalTime.now())
                         + " || "
                         + record.getMessage() + "\n"
                         + "        "
