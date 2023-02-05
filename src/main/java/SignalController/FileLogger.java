@@ -2,10 +2,10 @@ package SignalController;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.*;
 
 public class FileLogger {
@@ -22,12 +22,12 @@ public class FileLogger {
 
 
     private static void initLogger() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH_mm_ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH_mm_ss");
         LocalDate now = LocalDate.now();
         dayOfWeek = now.getDayOfWeek();
         try {
             FileHandler fileHandler = new FileHandler(System.getProperty("user.dir")
-                    + "/Log/" + dateFormat.format(now) + ".log");
+                    + "/Log/" + now.format(formatter) + ".log");
             fileHandler.setFormatter(new FileFormatter());
             logger.addHandler(fileHandler);
         } catch (Exception e) {
@@ -65,7 +65,7 @@ public class FileLogger {
     private static class FileFormatter extends Formatter {
         @Override
         public String format(LogRecord record) {
-            SimpleDateFormat logTime = new SimpleDateFormat("dd.MM HH:mm:ss");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM HH:mm:ss");
             Throwable thrown = record.getThrown();
             String whiteSpace;
             if (record.getLevel().equals(Level.INFO)) {
@@ -78,7 +78,7 @@ public class FileLogger {
             if (thrown == null) {
                 return record.getLevel()
                         + whiteSpace
-                        + logTime.format(LocalTime.now())
+                        + LocalTime.now().format(formatter)
                         + " || "
                         + record.getMessage() + "\n";
             } else {
@@ -86,7 +86,7 @@ public class FileLogger {
                 thrown.printStackTrace(new PrintWriter(sw));
                 return record.getLevel()
                         + whiteSpace
-                        + logTime.format(LocalTime.now())
+                        + LocalTime.now().format(formatter)
                         + " || "
                         + record.getMessage() + "\n"
                         + "        "
