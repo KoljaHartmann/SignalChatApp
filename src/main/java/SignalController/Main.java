@@ -33,15 +33,15 @@ public class Main {
                 RoboRockController::cleanRoom, nextCleanup, 86400, TimeUnit.SECONDS
         );
 
-
         // Periodical Logger
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
                 () -> {
-                    long delay = marsThread.getDelay(TimeUnit.MILLISECONDS);
-                    boolean done = marsThread.isDone();
-                    boolean cancelled = marsThread.isCancelled();
-                    String s = marsThread.toString();
-                    FileLogger.logInfo(String.format("State of Mars Thread: Delay = %s; Done = %s; Cancelled = %s; String = %s", delay, done, cancelled, s));
+                    if (marsThread.getDelay(TimeUnit.SECONDS) < 30) {
+                        FileLogger.logInfo("Ping to Mars stalled for 30 seconds. Canceling Thread and clearing queue.");
+                        JsonEvaluator.resetLastPingToMars();
+                        marsThread.cancel(true);
+                        SignalController.sendMessage("Mars Queue cleared", GlobalConfig.getInstance().getSignalMarsConfigGroup());
+                    }
                 }, 10, 10, TimeUnit.SECONDS
         );
     }

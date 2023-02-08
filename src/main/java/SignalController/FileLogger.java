@@ -24,12 +24,20 @@ public class FileLogger {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH_mm_ss");
         LocalDateTime now = LocalDateTime.now();
         localDate = now.toLocalDate();
+        for (Handler handler : logger.getHandlers()) {
+            handler.close();
+            logger.removeHandler(handler);
+        }
+        FileHandler fileHandler = null;
         try {
-            FileHandler fileHandler = new FileHandler(System.getProperty("user.dir")
+            fileHandler = new FileHandler(System.getProperty("user.dir")
                     + "/Log/" + now.format(formatter) + ".log");
             fileHandler.setFormatter(new FileFormatter());
             logger.addHandler(fileHandler);
         } catch (Exception e) {
+            if (fileHandler != null) {
+                fileHandler.close();
+            }
             e.printStackTrace();
         }
     }
