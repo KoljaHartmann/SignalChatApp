@@ -36,7 +36,8 @@ public class Main {
         // Periodical Logger
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
                 () -> {
-                    if (marsThread.getDelay(TimeUnit.SECONDS) < 30) {
+                    FileLogger.logInfo("Current delay: " + marsThread.getDelay(TimeUnit.MILLISECONDS));
+                    if (marsThread.getDelay(TimeUnit.SECONDS) < -30) {
                         FileLogger.logInfo("Ping to Mars stalled for 30 seconds. Canceling Thread and clearing queue.");
                         JsonEvaluator.resetLastPingToMars();
                         marsThread.cancel(true);
