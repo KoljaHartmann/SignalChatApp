@@ -186,7 +186,7 @@ public class JsonEvaluator {
     }
 
     public static void resetLastPingToMars() {
-        lastPingToMars = Instant.now().getEpochSecond();
+        lastPingToMars = Instant.now().getEpochSecond() + 1;
     }
 
 }

@@ -2,29 +2,59 @@ package TerraformingMars;
 
 import SignalController.GlobalConfig;
 import SignalController.SignalController;
+import SignalController.FileLogger;
+
+import java.util.Locale;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public class SignalMessageReceiver {
 
-    public static void receive(String groupId, String body) {
-        String[] bodyParts = body.trim().split(" ");
-        if (bodyParts.length == 2) {
-            String command = bodyParts[0].trim();
-            String parameter = bodyParts[1].trim();
-
-            if (command.equals("setGameUrl") || command.equals("Url")) {
-                String url = parseUrl(parameter, groupId);
+    public static void receive(String groupId, String receive) {
+        String body = receive.toLowerCase(Locale.ROOT);
+        if (body.startsWith("setgameurl ") || body.startsWith("url")) {
+            String[] split = body.split(" ");
+            if (split.length == 2) {
+                String url = parseUrl(split[1], groupId);
                 if (url != null) {
                     System.out.println("setting GameUrl to [" + url + "]");
                     GlobalConfig.getInstance().setGameUrl(url);
                     SignalController.sendMessage("GameUrl configured successfully", groupId);
                 }
             } else {
-                System.out.println("ERROR: unknown Command [" + command + "] parameter: [" + parameter + "]");
-                SignalController.sendMessage("ERROR: unknown Command [" + command + "] parameter: [" + parameter + "]", groupId);
+                SignalController.sendMessage("Falsches Format du Bob", groupId);
             }
+        } else if (body.startsWith("echo ")) {
+            String message = body.substring(5);
+            System.out.println("echo " + message);
+            SignalController.sendMessage(message, groupId);
+        } else if (body.startsWith("fw ")) {
+            String message = body.substring(3);
+            System.out.println("fw " + message);
+            SignalController.sendMessage(message, GlobalConfig.getInstance().getSignalMarsChatGroup());
+        } else if (body.equals("kill!")) {
+            FileLogger.logInfo("Attempting to kill mars thread.");
+            ScheduledFuture<?> marsThread = GlobalConfig.getInstance().getMarsThread();
+            if (marsThread != null) {
+                marsThread.cancel(true);
+                GlobalConfig.getInstance().setMarsThread(null);
+            }
+            SignalController.sendMessage("SILENCE! I KILL YOU!", groupId);
+        } else if (body.equals("restart")) {
+            FileLogger.logInfo("Attempting to kill mars thread.");
+            ScheduledFuture<?> marsThread = GlobalConfig.getInstance().getMarsThread();
+            if (marsThread != null) {
+                marsThread.cancel(true);
+            }
+            ScheduledFuture<?> restartedMarsThread = Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
+                    JsonEvaluator::processGameState, 50, 1500, TimeUnit.MILLISECONDS
+            );
+            GlobalConfig.getInstance().setMarsThread(restartedMarsThread);
+            SignalController.sendMessage("Habe versucht neu zu starten :)", groupId);
         } else {
-            System.out.println("Unable to handle message, must contain exactly two parts: " + body);
-            SignalController.sendMessage("Unable to handle message, must contain exactly two parts: " + body, groupId);
+            System.out.println("ERROR: unknown Command " + body);
+            SignalController.sendMessage("ERROR: unknown Command " + body, groupId);
         }
     }
 

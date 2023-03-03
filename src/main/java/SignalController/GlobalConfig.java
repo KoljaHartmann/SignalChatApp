@@ -2,6 +2,8 @@ package SignalController;
 
 import TerraformingMars.MarsController;
 
+import java.util.concurrent.ScheduledFuture;
+
 public class GlobalConfig {
 
     private final static String SIGNAL_USERNAME_ENV = "SIGNAL_USERNAME";
@@ -25,6 +27,7 @@ public class GlobalConfig {
     private final String signalCliPath;
     private final String signalRockyGroup;
     private final String rockyUrl;
+    private ScheduledFuture<?> marsThread;
 
     private GlobalConfig() {
         this.gameUrl = System.getenv(TM_GAME_URL_ENV) != null ? System.getenv(TM_GAME_URL_ENV) : "";
@@ -51,6 +54,14 @@ public class GlobalConfig {
     public void setGameUrl(String gameUrl) {
         this.gameUrl = gameUrl;
         MarsController.setMarsGameFinished(false);
+    }
+
+    public void setMarsThread(ScheduledFuture<?> marsThread) {
+        this.marsThread = marsThread;
+    }
+
+    public ScheduledFuture<?> getMarsThread() {
+        return marsThread;
     }
 
     public String getSignalMarsChatGroup() {
@@ -87,5 +98,6 @@ public class GlobalConfig {
                 "\n\t Mars Chat Group [%s]" +
                 "\n\t Mars Config Group[%s]", gameUrl, signalCliPath, signalUsername, signalRockyGroup, rockyUrl, signalMarsChatGroup, signalMarsConfigGroup);
     }
+
 
 }
