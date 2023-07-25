@@ -24,14 +24,17 @@ public class ChatMacros {
     private static final ArrayList<String> researchPingList = new ArrayList<>(
             Arrays.asList(
                     "Karten oder 'n Stück Holz!",
+                    "Karte her, sonst Taschen leer!",
                     "Karten kaufen statt Haare raufen. Kleines Gedicht, Hehe.",
-                    "Da brat' mir einer 'nen Storch und die Beine recht knusprig! Los, spiel!"
+                    "Da brat' mir einer 'nen Storch und die Beine recht knusprig! Los, spiel!",
                     "Kauf deine verdammten Karten!",
                     "Weniger Eierschaukeln, mehr Karten kaufen!",
+                    "Nur die Karten kommen in' Garten!",
                     "Es wäre herzallerliebst, käuftet ihr eure Kärtchen!",
                     "Ich muss dich leider informieren: Vom Warten werden die Karten nicht besser!",
                     "Niemand hat die Absicht, für dich deine Karten zu kaufen!",
                     "Dies sind keine Fake News!",
+                    "Was letzte Preis?",
                     "Junger Finne, jetzt geht's aber los! Karten kaufen!",
                     "Dort liegen Karten. Jeder hat zwei Hände. Die nächsten Schritte sollten klar sein."
             ));
@@ -42,7 +45,7 @@ public class ChatMacros {
                     "Ping @all. Bitte draften Sie jetzt.",
                     "Ping @all. Eine neue Draftrunde startet.",
                     "Euer Volk wünscht einen Draft!",
-                    "Dr. Raft bitte zur Kasse 2!"
+                    "Dr. Raft bitte zur Kasse 2!",
                     "Draften",
                     "Dröft"
             ));

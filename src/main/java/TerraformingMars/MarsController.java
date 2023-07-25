@@ -1,13 +1,12 @@
 package TerraformingMars;
 
 import SignalController.FileLogger;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 
 public class MarsController {
@@ -17,6 +16,7 @@ public class MarsController {
     private static String activePlayer = "";
     private static long lastPingTime = 0;
 
+    /*
     public static JSONObject readMarsJson(String url) {
         if (url == null || url.isEmpty()) {
             System.out.println("No url configured");
@@ -30,6 +30,29 @@ public class MarsController {
                 sb.append((char) cp);
             }
             return new JSONObject(sb.toString());
+        } catch (Exception e) {
+            FileLogger.logError("Problems reading JSON from " + url, e);
+            return null;
+        }
+    }
+     */
+
+    public static JSONObject readMarsJson(String url) {
+        if (url == null || url.isEmpty()) {
+            System.out.println("No url configured");
+            return null;
+        }
+        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        Request request = new Request.Builder().url(url).get().build();
+        try {
+            Response response = client.newCall(request).execute();
+            ResponseBody body = response.body();
+            if (response.code() == 200 && body != null) {
+                return new JSONObject(body.string());
+            } else {
+                FileLogger.logError("Problems reading JSON from " + url + ". Response code: " + response.code() + ". Body: " + body);
+                return null;
+            }
         } catch (Exception e) {
             FileLogger.logError("Problems reading JSON from " + url, e);
             return null;

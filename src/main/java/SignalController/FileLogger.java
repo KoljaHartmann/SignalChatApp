@@ -2,68 +2,69 @@ package SignalController;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.*;
 
 public class FileLogger {
 
-    private static final Logger logger = Logger.getLogger(FileLogger.class
-            .getName());
+    private static final Logger logger = Logger.getLogger(FileLogger.class.getName());
+    private static LocalDate localDate;
+
+    private static void checkLogger(String message) {
+        System.out.println(message);
+        if (logger.getHandlers().length < 1 || !LocalDate.now().equals(localDate)) {
+            initLogger();
+        }
+    }
+
 
     private static void initLogger() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH_mm_ss");
-        Date time = new GregorianCalendar().getTime();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH_mm_ss");
+        LocalDateTime now = LocalDateTime.now();
+        localDate = now.toLocalDate();
+        for (Handler handler : logger.getHandlers()) {
+            handler.close();
+            logger.removeHandler(handler);
+        }
+        FileHandler fileHandler = null;
         try {
-            FileHandler fileHandler = new FileHandler(System.getProperty("user.dir")
-                    + "/Log/" + dateFormat.format(time) + ".log");
+            fileHandler = new FileHandler(System.getProperty("user.dir")
+                    + "/Log/" + now.format(formatter) + ".log");
             fileHandler.setFormatter(new FileFormatter());
             logger.addHandler(fileHandler);
         } catch (Exception e) {
+            if (fileHandler != null) {
+                fileHandler.close();
+            }
             e.printStackTrace();
         }
     }
 
     public static void logInfo(String message) {
-        System.out.println(message);
-        if (logger.getHandlers().length < 1) {
-            initLogger();
-        }
+        checkLogger(message);
         logger.info(message);
     }
 
     public static void logWarning(String message) {
-        System.out.println(message);
-        if (logger.getHandlers().length < 1) {
-            initLogger();
-        }
+        checkLogger(message);
         logger.warning(message);
     }
 
     public static void logError(String message) {
-        System.out.println(message);
-        if (logger.getHandlers().length < 1) {
-            initLogger();
-        }
+        checkLogger(message);
         logger.severe(message);
     }
 
     public static void logError(String message, Throwable e) {
-        System.out.println(message);
-        if (logger.getHandlers().length < 1) {
-            initLogger();
-        }
+        checkLogger(message);
         logger.log(Level.SEVERE, message, e);
         e.printStackTrace();
     }
 
     public static void logError(Throwable e) {
-        System.out.println(e.getMessage());
-        if (logger.getHandlers().length < 1) {
-            initLogger();
-        }
+        checkLogger(e.getMessage());
         logger.log(Level.SEVERE, e.getMessage(), e);
         e.printStackTrace();
     }
@@ -71,9 +72,7 @@ public class FileLogger {
     private static class FileFormatter extends Formatter {
         @Override
         public String format(LogRecord record) {
-            SimpleDateFormat logTime = new SimpleDateFormat("dd.MM HH:mm:ss");
-            Calendar calendar = new GregorianCalendar();
-            calendar.setTimeInMillis(record.getMillis());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM HH:mm:ss");
             Throwable thrown = record.getThrown();
             String whiteSpace;
             if (record.getLevel().equals(Level.INFO)) {
@@ -86,7 +85,7 @@ public class FileLogger {
             if (thrown == null) {
                 return record.getLevel()
                         + whiteSpace
-                        + logTime.format(calendar.getTime())
+                        + LocalDateTime.now().format(formatter)
                         + " || "
                         + record.getMessage() + "\n";
             } else {
@@ -94,7 +93,7 @@ public class FileLogger {
                 thrown.printStackTrace(new PrintWriter(sw));
                 return record.getLevel()
                         + whiteSpace
-                        + logTime.format(calendar.getTime())
+                        + LocalDateTime.now().format(formatter)
                         + " || "
                         + record.getMessage() + "\n"
                         + "        "
