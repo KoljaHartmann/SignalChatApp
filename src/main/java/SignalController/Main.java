@@ -27,30 +27,11 @@ public class Main {
 
         // Scheduled room cleanup each day at 10:45am
         int currentSeconds = LocalTime.now().toSecondOfDay();
-        int scheduledSeconds = 38700;
+        int scheduledSeconds = 42300;
         int nextCleanup = scheduledSeconds > (currentSeconds + 5) ? scheduledSeconds - currentSeconds : (scheduledSeconds + 86400) - currentSeconds;
         System.out.println("Current time in seconds: " + currentSeconds + ". Scheduling next room clean up in " + nextCleanup + " seconds.");
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
                 RoboRockController::cleanRoom, nextCleanup, 86400, TimeUnit.SECONDS
         );
-
-        //TODO: An einem Beispiel überprüfen wie ich laufende Threads manipulieren kann. Einen Thread mit wait lang laufen lassen. Dann aus einem anderen Thread heraus, rausfindne wie groß der Stack ist, das aktuelle Ding killen und einen neuen machen.
-        //TODO mars ping vernünftig machen, verstehen. Mit Timeout
-
-        // Periodical Logger
-        /*
-        Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
-                () -> {
-                    FileLogger.logInfo("Current delay: " + marsThread.getDelay(TimeUnit.MILLISECONDS));
-                    if (marsThread.getDelay(TimeUnit.MILLISECONDS) < -300000) {
-                        FileLogger.logInfo("Ping to Mars stalled for 30 seconds. Canceling Thread and clearing queue.");
-                        JsonEvaluator.resetLastPingToMars();
-                        marsThread.cancel(true);
-                        SignalController.sendMessage("Mars Queue stalled", GlobalConfig.getInstance().getSignalMarsConfigGroup());
-                    }
-                }, 1, 1, TimeUnit.MINUTES
-        );
-
-         */
     }
 }

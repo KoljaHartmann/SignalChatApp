@@ -87,9 +87,9 @@ public class RoboRockController {
         } else if (dayOfWeek == DayOfWeek.THURSDAY) {
             sendSignalMessage("Heute ist die Küche an der Reihe, in einer Viertelstunde sauge ich die Küche.");
             scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.KUECHE);}, 15, TimeUnit.MINUTES);
-        } else if (dayOfWeek == DayOfWeek.FRIDAY) {
-            sendSignalMessage("Heute ist das Arbeitszimmer an der Reihe, wärend der Mittagspause sauge ich das Arbeitszimmer.");
-            scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.MULTIZIMMER);}, 90, TimeUnit.MINUTES);
+//        } else if (dayOfWeek == DayOfWeek.FRIDAY) {
+//            sendSignalMessage("Heute ist das Arbeitszimmer an der Reihe, wärend der Mittagspause sauge ich das Arbeitszimmer.");
+//            scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.MULTIZIMMER);}, 90, TimeUnit.MINUTES);
         }
     }
 
