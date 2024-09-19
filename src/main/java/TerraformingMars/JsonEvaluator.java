@@ -58,6 +58,14 @@ public class JsonEvaluator {
                     message = ChatMacros.finalGreeneryPing(currentPlayers.get(0));
                 }
             }
+        } else if (currentPhase.equals(PRELUDES)) {
+            if (lastPhase.equals(RESEARCH)) {
+                message = ChatMacros.getSimplePing(currentPlayers.get(0));
+            } else if (currentPlayers.size() == 1 && lastActivePlayers.size() > 0) {
+                if (!currentPlayers.get(0).equals(lastActivePlayers.get(0))) {
+                    message = ChatMacros.getSimplePing(currentPlayers.get(0));
+                }
+            }
         } else if (currentPhase.equals(END)) {
             message = getWinnerMessage(currentJsonObject);
             MarsController.setMarsGameFinished(true);
@@ -74,7 +82,7 @@ public class JsonEvaluator {
         } else {
             if(reminderPingReasonable()) {
                 if (!MarsController.getActivePlayer().isEmpty()) {
-                    SignalController.sendMessage(ChatMacros.getReminderPing(MarsController.getActivePlayer()), globalConfig.getSignalMarsChatGroup());
+                    SignalController.sendMessage(ChatMacros.getReminderPing(MarsController.getActivePlayer(), currentPhase), globalConfig.getSignalMarsChatGroup());
                     MarsController.storePingTime();
                 } else {
                     //TODO mehrere Spieler
