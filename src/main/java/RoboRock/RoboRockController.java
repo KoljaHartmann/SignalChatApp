@@ -76,20 +76,22 @@ public class RoboRockController {
         DayOfWeek dayOfWeek = LocalDate.now().getDayOfWeek();
         FileLogger.logInfo("Room clean up started. We have " + dayOfWeek);
         if (dayOfWeek == DayOfWeek.MONDAY) {
-            sendSignalMessage("Heute ist das Schlafzimmer an der Reihe, in einer Viertelstunde sauge ich das Schlafzimmer.");
-            scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.SCHLAFZIMMER);}, 15, TimeUnit.MINUTES);
+            sendSignalMessage("Heute ist der Flur an der Reihe, in einer Viertelstunde sauge ich den Flur.");
+            scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.FLUR);}, 15, TimeUnit.MINUTES);
         } else if (dayOfWeek == DayOfWeek.TUESDAY) {
             sendSignalMessage("Heute ist das Wohnzimmer an der Reihe, in einer Viertelstunde sauge ich das Wohnzimmer.");
             scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.WOHNZIMMER);}, 15, TimeUnit.MINUTES);
         } else if (dayOfWeek == DayOfWeek.WEDNESDAY) {
-            sendSignalMessage("Heute ist der Flur an der Reihe, in einer Viertelstunde sauge ich den Flur.");
-            scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.FLUR);}, 15, TimeUnit.MINUTES);
-        } else if (dayOfWeek == DayOfWeek.THURSDAY) {
             sendSignalMessage("Heute ist die Küche an der Reihe, in einer Viertelstunde sauge ich die Küche.");
             scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.KUECHE);}, 15, TimeUnit.MINUTES);
+        } else if (dayOfWeek == DayOfWeek.THURSDAY) {
+            sendSignalMessage("Heute ist der Flur an der Reihe, in einer Viertelstunde sauge ich den Flur.");
+            scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.FLUR);}, 15, TimeUnit.MINUTES);
         } else if (dayOfWeek == DayOfWeek.FRIDAY) {
-            sendSignalMessage("Heute ist das Arbeitszimmer an der Reihe, wärend der Mittagspause sauge ich das Arbeitszimmer.");
-            scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.MULTIZIMMER);}, 90, TimeUnit.MINUTES);
+            sendSignalMessage("Heute ist das Schlafzimmer an der Reihe, in einer Viertelstunde sauge ich das Schlafzimmer.");
+            scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.SCHLAFZIMMER);}, 15, TimeUnit.MINUTES);
+//          sendSignalMessage("Heute ist das Arbeitszimmer an der Reihe, wärend der Mittagspause sauge ich das Arbeitszimmer.");
+//          scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.MULTIZIMMER);}, 90, TimeUnit.MINUTES);
         }
     }
 

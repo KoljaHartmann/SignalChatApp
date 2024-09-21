@@ -61,7 +61,18 @@ public class ChatMacros {
                     "'Gut Ding will Weile haben', sagt der Volksmund! Nur allzu lang verweilen sollten Sie bei Ihrem Zug nicht!",
                     "Elon Musk prophezeit: Erst besiedeln wir den Mars im Real Life, dann machst du deinen Zug.",
                     "Ein weiser Mann fragte einst: 'Was macht es denn? Es verdirbt es!'. Sei kein Gollum und spiel!",
-                    "Rosen sind rot, Veilchen sind blau, mach' jetzt deinen Zug, das wär' ziemlich schlau."
+                    "Rosen sind rot, Veilchen sind blau, mach' jetzt deinen Zug, das wär' ziemlich schlau.",
+                    "Lassen Sie sich ruhig Zeit, wir wollen hier nichts überstürzen"
+            ));
+
+    private static final ArrayList<String> preludeReminderMessageList = new ArrayList<>(
+            Arrays.asList(
+                    "Darf ich Sie an Ihren Zug erinnern?",
+                    "Ihr Tag ist stehts so stressig, vielleicht möchten Sie sich mit einem Zug in Terraforming Mars erfreuen?",
+                    "Eine ausgesprochen schwierige Entscheidung, nicht wahr?",
+                    "Es sind zwei Karten, beide müssen gespielt werden. Die Entscheidung braucht nicht so schwer fallen.",
+                    "Es heißt Präludium, weil es vor dem Spiel stattfindet. Wollen wir denn auch starten?",
+                    "Es heißt, manch einer sei schon mal beim Vorspiel eingeschlafen"
             ));
 
     private static final Random rand = new Random();
@@ -99,7 +110,11 @@ public class ChatMacros {
         return "Unglaublich. Ein Gleichstand zwischen " + getPlayerName(winner) + " und " + getPlayerName(secondPlace) + "! Herzlichen Glückwunsch!";
     }
 
-    public static String getReminderPing(String player) {
-        return "Ping @" + getPlayerName(player) + ". " + reminderMessageList.get(rand.nextInt(reminderMessageList.size()));
+    public static String getReminderPing(String player, Phases phase) {
+        if (phase.equals(Phases.PRELUDES)) {
+            return "Ping @" + getPlayerName(player) + ". " + preludeReminderMessageList.get(rand.nextInt(preludeReminderMessageList.size()));
+        } else {
+            return "Ping @" + getPlayerName(player) + ". " + reminderMessageList.get(rand.nextInt(reminderMessageList.size()));
+        }
     }
 }

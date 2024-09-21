@@ -6,7 +6,8 @@ public enum  Phases {
     RESEARCH,
     ACTION,
     END,
-    PRODUCTION;
+    PRODUCTION,
+    PRELUDES;
 
     @Override
     public String toString() {
