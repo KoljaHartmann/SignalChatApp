@@ -36,7 +36,11 @@ public class ChatMacros {
                     "Dies sind keine Fake News!",
                     "Was letzte Preis?",
                     "Junger Finne, jetzt geht's aber los! Karten kaufen!",
-                    "Dort liegen Karten. Jeder hat zwei Hände. Die nächsten Schritte sollten klar sein."
+                    "Dort liegen Karten. Jeder hat zwei Hände. Die nächsten Schritte sollten klar sein.",
+                    "Wenn du nicht gerade Terralabs Research spielst, solltest du dich für 0-4 Karten entscheiden!",
+                    "Karten kaufen! Da haben die Römer ja den Limes schneller gebaut!",
+                    "Die Azteken wollten Gold - Jeeves will nur, dass alle ihre Karten kaufen!",
+                    "Bitte Karten kaufen! Es will doch niemand Lukas den ersten Platz in der Wartezeit streitig machen!"
             ));
 
     private static final ArrayList<String> draftMessageList = new ArrayList<>(
@@ -47,7 +51,10 @@ public class ChatMacros {
                     "Euer Volk wünscht einen Draft!",
                     "Dr. Raft bitte zur Kasse 2!",
                     "Draften",
-                    "Dröft"
+                    "Dröft",
+                    "Drrrrrröger Drrrraft",
+                    "to DRAFT sb.: jdn einziehen [ o. einberufen]",
+                    "Daniel ruft applaudierend flatulierend \"Teig!\" (= DRAFT)"
             ));
 
     private static final ArrayList<String> reminderMessageList = new ArrayList<>(
@@ -57,12 +64,13 @@ public class ChatMacros {
                     "Ich möchte Sie höflichst daran erinnern, dass Sie am Zug sind.",
                     "Ihr Tag ist stehts so stressig, vielleicht möchten Sie sich mit einem Zug in Terraforming Mars erfreuen?",
                     "Ein ausgesprochen schwieriger Zug, nicht wahr?",
-                    "Wenn ich Ihnen einen Tipp geben darf, ich würde empfehlen zu passen.",
+                    "Wenn ich Ihnen einen Tipp geben darf: Ich würde empfehlen zu passen.",
                     "'Gut Ding will Weile haben', sagt der Volksmund! Nur allzu lang verweilen sollten Sie bei Ihrem Zug nicht!",
                     "Elon Musk prophezeit: Erst besiedeln wir den Mars im Real Life, dann machst du deinen Zug.",
                     "Ein weiser Mann fragte einst: 'Was macht es denn? Es verdirbt es!'. Sei kein Gollum und spiel!",
                     "Rosen sind rot, Veilchen sind blau, mach' jetzt deinen Zug, das wär' ziemlich schlau.",
-                    "Lassen Sie sich ruhig Zeit, wir wollen hier nichts überstürzen"
+                    "Lassen Sie sich ruhig Zeit, wir wollen hier nichts überstürzen",
+                    "Ich weiß, es kann nicht jeder so schnell spielen wie Damian, aber ein wenig mehr Mühe kannst du dir schon geben."
             ));
 
     private static final ArrayList<String> preludeReminderMessageList = new ArrayList<>(
@@ -72,7 +80,9 @@ public class ChatMacros {
                     "Eine ausgesprochen schwierige Entscheidung, nicht wahr?",
                     "Es sind zwei Karten, beide müssen gespielt werden. Die Entscheidung braucht nicht so schwer fallen.",
                     "Es heißt Präludium, weil es vor dem Spiel stattfindet. Wollen wir denn auch starten?",
-                    "Es heißt, manch einer sei schon mal beim Vorspiel eingeschlafen"
+                    "Es heißt, manch einer sei schon mal beim Vorspiel eingeschlafen",
+                    "PRÄsentiert eure Karten!",
+                    "Lasst uns mal bitte niemanden hier verPRÄllen und spielt!"
             ));
 
     private static final Random rand = new Random();
