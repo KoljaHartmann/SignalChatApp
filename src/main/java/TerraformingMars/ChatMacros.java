@@ -40,7 +40,7 @@ public class ChatMacros {
                     "Wenn du nicht gerade Terralabs Research spielst, solltest du dich für 0-4 Karten entscheiden!",
                     "Karten kaufen! Da haben die Römer ja den Limes schneller gebaut!",
                     "Die Azteken wollten Gold - Jeeves will nur, dass alle ihre Karten kaufen!",
-                    "Bitte Karten kaufen! Es will doch niemand Lukas den ersten Platz in der Wartezeit streitig machen!"
+                    "Bitte Karten kaufen! Es will doch niemand (meistens) Lukas den ersten Platz in der Wartezeit streitig machen!"
             ));
 
     private static final ArrayList<String> draftMessageList = new ArrayList<>(
@@ -48,13 +48,13 @@ public class ChatMacros {
                     "Ping @all. Es darf gedraftet werden.",
                     "Ping @all. Bitte draften Sie jetzt.",
                     "Ping @all. Eine neue Draftrunde startet.",
+                    "Ping @all. Es ist Zeit für einen Draft!",
+                    "Ping @all. Der Draft, der Draft, der Draft ist on fire!",
                     "Euer Volk wünscht einen Draft!",
                     "Dr. Raft bitte zur Kasse 2!",
                     "Draften",
                     "Dröft",
-                    "Drrrrrröger Drrrraft",
-                    "to DRAFT sb.: jdn einziehen [ o. einberufen]",
-                    "Daniel ruft applaudierend flatulierend \"Teig!\" (= DRAFT)"
+                    "Drrrrrröger Drrrraft"
             ));
 
     private static final ArrayList<String> reminderMessageList = new ArrayList<>(
@@ -70,7 +70,8 @@ public class ChatMacros {
                     "Ein weiser Mann fragte einst: 'Was macht es denn? Es verdirbt es!'. Sei kein Gollum und spiel!",
                     "Rosen sind rot, Veilchen sind blau, mach' jetzt deinen Zug, das wär' ziemlich schlau.",
                     "Lassen Sie sich ruhig Zeit, wir wollen hier nichts überstürzen",
-                    "Ich weiß, es kann nicht jeder so schnell spielen wie Damian, aber ein wenig mehr Mühe kannst du dir schon geben."
+                    "Ich weiß, es kann nicht jeder so schnell spielen wie Damian, aber ein wenig mehr Mühe kannst du dir schon geben.",
+                    "Alle meine Eeeentchen machen einen Zug, machen einen Zug, gewartet haben wiiiiir jetzt endlich genug!"
             ));
 
     private static final ArrayList<String> preludeReminderMessageList = new ArrayList<>(
