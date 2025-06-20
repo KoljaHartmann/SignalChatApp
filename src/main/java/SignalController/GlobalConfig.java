@@ -1,6 +1,9 @@
 package SignalController;
 
 import TerraformingMars.MarsController;
+import java.io.*;
+import java.nio.file.*;
+import java.util.*;
 
 import java.util.concurrent.ScheduledFuture;
 
@@ -8,6 +11,7 @@ public class GlobalConfig {
 
     private final static String SIGNAL_USERNAME_ENV = "SIGNAL_USERNAME";
     private final static String SIGNAL_CLI_PATH_ENV = "SIGNAL_CLI_PATH";
+    private final static String SERVICE_ENV_PATH_ENV = "SERVICE_ENV_PATH";
 
     // Terraforming Mars
     private final static String SIGNAL_MARS_CHAT_GROUP_ENV = "SIGNAL_MARS_CHAT_GROUP";
@@ -25,6 +29,7 @@ public class GlobalConfig {
     private final String signalMarsChatGroup;
     private final String signalMarsConfigGroup;
     private final String signalCliPath;
+    private final String serviceEnvPath;
     private final String signalRockyGroup;
     private final String rockyUrl;
     private ScheduledFuture<?> marsThread;
@@ -35,6 +40,7 @@ public class GlobalConfig {
         this.signalMarsChatGroup = System.getenv(SIGNAL_MARS_CHAT_GROUP_ENV);
         this.signalMarsConfigGroup = System.getenv(SIGNAL_MARS_CONFIG_GROUP_ENV);
         this.signalCliPath = System.getenv(SIGNAL_CLI_PATH_ENV);
+        this.serviceEnvPath = System.getenv(SERVICE_ENV_PATH_ENV);
         this.signalRockyGroup = System.getenv(SIGNAL_ROCKY_GROUP_ENV);
         this.rockyUrl = System.getenv(ROCKY_URL_ENV);
         System.out.println("Config Created: \n" + this);
@@ -45,6 +51,22 @@ public class GlobalConfig {
             instance = new GlobalConfig();
         }
         return instance;
+    }
+
+    public void writeGameUrlInServiceEnvFile(String url) throws IOException {
+        Path envPath = Paths.get(this.serviceEnvPath);
+        String envVariable = TM_GAME_URL_ENV + "=" + url;
+
+        List<String> rows = Files.readAllLines(envPath);
+        List<String> newRows = new ArrayList<>();
+        for (String row : rows) {
+            if (row.startsWith(TM_GAME_URL_ENV)) {
+                newRows.add(envVariable);
+            } else {
+                newRows.add(row);
+            }
+        }
+        Files.write(envPath, newRows);
     }
 
     public String getGameUrl() {

@@ -24,6 +24,7 @@ public class Main {
                 JsonEvaluator::processGameState, 50, 1500, TimeUnit.MILLISECONDS
         );
         GlobalConfig.getInstance().setMarsThread(marsThread);
+        SignalController.sendMessage("Willkommen zum Mars! Game url ist " + GlobalConfig.getInstance().getGameUrl(), GlobalConfig.getInstance().getSignalMarsConfigGroup());
 
         // Scheduled room cleanup each day at 10:45am
         int currentSeconds = LocalTime.now().toSecondOfDay();

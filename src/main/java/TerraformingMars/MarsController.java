@@ -12,7 +12,7 @@ import java.time.Instant;
 public class MarsController {
 
 
-    private static boolean marsGameFinished = true;
+    private static boolean marsGameFinished = false;
     private static String activePlayer = "";
     private static long lastPingTime = 0;
 

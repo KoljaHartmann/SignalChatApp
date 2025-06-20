@@ -4,6 +4,7 @@ import SignalController.GlobalConfig;
 import SignalController.SignalController;
 import SignalController.FileLogger;
 
+import java.io.IOException;
 import java.util.Locale;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
@@ -14,17 +15,7 @@ public class SignalMessageReceiver {
     public static void receive(String groupId, String body) {
         String lowerCaseBody = body.toLowerCase(Locale.ROOT);
         if (lowerCaseBody.startsWith("setgameurl ") || lowerCaseBody.startsWith("url")) {
-            String[] split = lowerCaseBody.split(" ");
-            if (split.length == 2) {
-                String url = parseUrl(split[1], groupId);
-                if (url != null) {
-                    System.out.println("setting GameUrl to [" + url + "]");
-                    GlobalConfig.getInstance().setGameUrl(url);
-                    SignalController.sendMessage("GameUrl configured successfully", groupId);
-                }
-            } else {
-                SignalController.sendMessage("Falsches Format du Bob", groupId);
-            }
+            setGameUrl(lowerCaseBody, groupId);
         } else if (lowerCaseBody.startsWith("echo ")) {
             String message = body.substring(5);
             System.out.println("echo " + message);
@@ -55,6 +46,25 @@ public class SignalMessageReceiver {
         } else {
             System.out.println("ERROR: unknown Command " + lowerCaseBody);
             SignalController.sendMessage("ERROR: unknown Command " + lowerCaseBody, groupId);
+        }
+    }
+
+    private static void setGameUrl(String lowerCaseBody, String groupId) {
+        String[] split = lowerCaseBody.split(" ");
+        if (split.length == 2) {
+            String url = parseUrl(split[1], groupId);
+            if (url != null) {
+                System.out.println("setting GameUrl to [" + url + "]");
+                GlobalConfig.getInstance().setGameUrl(url);
+                try {
+                    GlobalConfig.getInstance().writeGameUrlInServiceEnvFile(url);
+                    SignalController.sendMessage("GameUrl configured successfully", groupId);
+                } catch (IOException e) {
+                    SignalController.sendMessage("Could not edit env file: " + e.getCause() + " " + e.getMessage() + " " + e, groupId);
+                }
+            }
+        } else {
+            SignalController.sendMessage("Falsches Format du Bob", groupId);
         }
     }
 
