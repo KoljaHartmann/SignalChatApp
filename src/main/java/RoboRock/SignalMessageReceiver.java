@@ -67,7 +67,7 @@ public class SignalMessageReceiver {
         } else if (command == ESSZIMMER) {
             response = RoboRockController.cleanZone(ESSZIMMER);
             if (response != null && response.code() == 200) {
-                SignalController.sendMessage("Okay, ich sauge nur das Multizimmer.", groupId);
+                SignalController.sendMessage("Okay, ich sauge nur das Esszimmer.", groupId);
             }
         } else if (command == KUECHE) {
             response = RoboRockController.cleanZone(KUECHE);
@@ -92,12 +92,12 @@ public class SignalMessageReceiver {
         } else if (command == WOHNBEREICH) {
             response = RoboRockController.cleanZone(WOHNZIMMER, ESSZIMMER, FLUR);
             if (response != null && response.code() == 200) {
-                SignalController.sendMessage("Okay, ich sauge nur den Flur.", groupId);
+                SignalController.sendMessage("Okay, ich sauge den Wohnbereich.", groupId);
             }
         } else if (command == ESSBEREICH) {
             response = RoboRockController.cleanZone(KUECHE, ESSZIMMER);
             if (response != null && response.code() == 200) {
-                SignalController.sendMessage("Okay, ich sauge nur den Flur.", groupId);
+                SignalController.sendMessage("Okay, ich sauge den Essbereich.", groupId);
             }
         } else if (command == CANCEL_SCHEDULE) {
             boolean canceled = RoboRockController.stopNextScheduledRoomCleanup();
