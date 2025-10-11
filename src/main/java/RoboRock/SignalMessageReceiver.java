@@ -8,22 +8,25 @@ import okhttp3.Response;
 import java.util.*;
 
 import static RoboRock.Enums.BasicCommand.*;
+import static RoboRock.Enums.CombinedZone.*;
 import static RoboRock.Enums.Zone.*;
 
 public class SignalMessageReceiver {
 
     //TODO Pause
-    static Map<List<String>, Command> patternMap = Map.of(
-            List.of("wo bist du"), FIND,
-            List.of("wohnung", "alles"), CLEAN,
-            List.of("stop", "anhalten"), STOP,
-            List.of("zurück", "laden"), CHARGE,
-            List.of("arbeitszimmer", "multizimmer", "kinderzimmer"), MULTIZIMMER,
-            List.of("küche"), KUECHE,
-            List.of("schlafzimmer"), SCHLAFZIMMER,
-            List.of("wohnzimmer"), WOHNZIMMER,
-            List.of("flur", "bad"), FLUR,
-            List.of("heute nicht", "nein", "überpringen", "aussetzen", "lass mal"), CANCEL_SCHEDULE
+    static Map<List<String>, Command> patternMap = Map.ofEntries(
+            new AbstractMap.SimpleEntry<>(List.of("wo bist du"), FIND),
+            new AbstractMap.SimpleEntry<>(List.of("wohnung", "alles"), CLEAN),
+            new AbstractMap.SimpleEntry<>(List.of("stop", "anhalten"), STOP),
+            new AbstractMap.SimpleEntry<>(List.of("zurück", "laden"), CHARGE),
+            new AbstractMap.SimpleEntry<>(List.of("küche"), KUECHE),
+            new AbstractMap.SimpleEntry<>(List.of("schlafzimmer"), SCHLAFZIMMER),
+            new AbstractMap.SimpleEntry<>(List.of("wohnzimmer"), WOHNZIMMER),
+            new AbstractMap.SimpleEntry<>(List.of("flur", "bad"), FLUR),
+            new AbstractMap.SimpleEntry<>(List.of("esszimmer", "küchentisch", "esstisch"), ESSZIMMER),
+            new AbstractMap.SimpleEntry<>(List.of("essbereich"), ESSBEREICH),
+            new AbstractMap.SimpleEntry<>(List.of("wohnbereich", "wohnen"), WOHNBEREICH),
+            new AbstractMap.SimpleEntry<>(List.of("heute nicht", "nein", "überpringen", "aussetzen", "lass mal"), CANCEL_SCHEDULE)
     );
 
     public static void receive(String body) {
@@ -61,8 +64,8 @@ public class SignalMessageReceiver {
             if (response != null && response.code() == 200) {
                 SignalController.sendMessage("Okay, ich fahre zur Basisstation zurück.", groupId);
             }
-        } else if (command == MULTIZIMMER) {
-            response = RoboRockController.cleanZone(MULTIZIMMER);
+        } else if (command == ESSZIMMER) {
+            response = RoboRockController.cleanZone(ESSZIMMER);
             if (response != null && response.code() == 200) {
                 SignalController.sendMessage("Okay, ich sauge nur das Multizimmer.", groupId);
             }
@@ -83,6 +86,16 @@ public class SignalMessageReceiver {
             }
         } else if (command == FLUR) {
             response = RoboRockController.cleanZone(FLUR);
+            if (response != null && response.code() == 200) {
+                SignalController.sendMessage("Okay, ich sauge nur den Flur.", groupId);
+            }
+        } else if (command == WOHNBEREICH) {
+            response = RoboRockController.cleanZone(WOHNZIMMER, ESSZIMMER, FLUR);
+            if (response != null && response.code() == 200) {
+                SignalController.sendMessage("Okay, ich sauge nur den Flur.", groupId);
+            }
+        } else if (command == ESSBEREICH) {
+            response = RoboRockController.cleanZone(KUECHE, ESSZIMMER);
             if (response != null && response.code() == 200) {
                 SignalController.sendMessage("Okay, ich sauge nur den Flur.", groupId);
             }

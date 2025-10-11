@@ -26,9 +26,9 @@ public class Main {
         GlobalConfig.getInstance().setMarsThread(marsThread);
         SignalController.sendMessage("Willkommen zum Mars! Game url ist " + GlobalConfig.getInstance().getGameUrl(), GlobalConfig.getInstance().getSignalMarsConfigGroup());
 
-        // Scheduled room cleanup each day at 10:45am
+        // Scheduled room cleanup each day at 09:00am
         int currentSeconds = LocalTime.now().toSecondOfDay();
-        int scheduledSeconds = 38700;
+        int scheduledSeconds = 31500; // 8:15 time of message send
         int nextCleanup = scheduledSeconds > (currentSeconds + 5) ? scheduledSeconds - currentSeconds : (scheduledSeconds + 86400) - currentSeconds;
         System.out.println("Current time in seconds: " + currentSeconds + ". Scheduling next room clean up in " + nextCleanup + " seconds.");
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(

@@ -8,9 +8,11 @@ import okhttp3.*;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class RoboRockController {
 
@@ -32,13 +34,16 @@ public class RoboRockController {
         return sendPlainCommand("find_robot");
     }
 
-    public static Response cleanZone(Zone zone) {
+    public static Response cleanZone(Zone... zones) {
         String rockyUrl = GlobalConfig.getInstance().getRockyUrl();
         try {
             OkHttpClient client = new OkHttpClient().newBuilder()
                     .build();
             MediaType mediaType = MediaType.get("application/json; charset=utf-8");
-            RequestBody body = RequestBody.create("[" + zone.getNumber() + "]", mediaType);
+            String joinedZones = Arrays.stream(zones)
+                    .map(e -> e.getNumber() == null ? "null" : e.getNumber().toString())
+                    .collect(Collectors.joining(","));
+            RequestBody body = RequestBody.create("[" + joinedZones + "]", mediaType);
             Request request = new Request.Builder()
                     .url(rockyUrl + "/api/start_cleaning_zones_by_id")
                     .method("PUT", body)
@@ -76,22 +81,20 @@ public class RoboRockController {
         DayOfWeek dayOfWeek = LocalDate.now().getDayOfWeek();
         FileLogger.logInfo("Room clean up started. We have " + dayOfWeek);
         if (dayOfWeek == DayOfWeek.MONDAY) {
-            sendSignalMessage("Heute ist der Flur an der Reihe, in einer Viertelstunde sauge ich den Flur.");
-            scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.FLUR);}, 15, TimeUnit.MINUTES);
+            sendSignalMessage("Heute ist der Wohnbereich an der Reihe, um neun Uhr sauge ich den Wohnbereich.");
+            scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.WOHNZIMMER, Zone.ESSZIMMER, Zone.FLUR);}, 45, TimeUnit.MINUTES);
         } else if (dayOfWeek == DayOfWeek.TUESDAY) {
-            sendSignalMessage("Heute ist das Wohnzimmer an der Reihe, in einer Viertelstunde sauge ich das Wohnzimmer.");
-            scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.WOHNZIMMER);}, 15, TimeUnit.MINUTES);
+            sendSignalMessage("Heute ist der Schlafzimmer an der Reihe, um neun Uhr sauge ich das Schlafzimmer.");
+            scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.SCHLAFZIMMER);}, 45, TimeUnit.MINUTES);
         } else if (dayOfWeek == DayOfWeek.WEDNESDAY) {
-            sendSignalMessage("Heute ist die Küche an der Reihe, in einer Viertelstunde sauge ich die Küche.");
-            scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.KUECHE);}, 15, TimeUnit.MINUTES);
+            sendSignalMessage("Heute ist der Essbereich an der Reihe, um neun Uhr sauge ich den Essbereich.");
+            scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.KUECHE, Zone.ESSZIMMER);}, 45, TimeUnit.MINUTES);
         } else if (dayOfWeek == DayOfWeek.THURSDAY) {
-            sendSignalMessage("Heute ist der Flur an der Reihe, in einer Viertelstunde sauge ich den Flur.");
-            scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.FLUR);}, 15, TimeUnit.MINUTES);
+            sendSignalMessage("Heute ist das Wohnzimmer an der Reihe, um neun Uhr sauge ich das Wohnzimmer.");
+            scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.WOHNZIMMER);}, 45, TimeUnit.MINUTES);
         } else if (dayOfWeek == DayOfWeek.FRIDAY) {
-            sendSignalMessage("Heute ist das Schlafzimmer an der Reihe, in einer Viertelstunde sauge ich das Schlafzimmer.");
-            scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.SCHLAFZIMMER);}, 15, TimeUnit.MINUTES);
-//          sendSignalMessage("Heute ist das Arbeitszimmer an der Reihe, wärend der Mittagspause sauge ich das Arbeitszimmer.");
-//          scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.MULTIZIMMER);}, 90, TimeUnit.MINUTES);
+            sendSignalMessage("Heute ist das Esszimmer an der Reihe, um neun Uhr sauge ich das Esszimmer.");
+            scheduledRoomCleanup = Executors.newSingleThreadScheduledExecutor().schedule(() -> {cleanZone(Zone.ESSZIMMER);}, 45, TimeUnit.MINUTES);
         }
     }
 
