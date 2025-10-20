@@ -34,6 +34,10 @@ public class RoboRockController {
         return sendPlainCommand("find_robot");
     }
 
+    public static Response pause() {
+        return sendPlainCommand("pause_cleaning");
+    }
+
     public static Response cleanZone(Zone... zones) {
         String rockyUrl = GlobalConfig.getInstance().getRockyUrl();
         try {

@@ -6,6 +6,7 @@ public enum BasicCommand implements Command{
     STOP,
     CHARGE,
     CLEAN,
+    PAUSE,
     CANCEL_SCHEDULE
 
 }

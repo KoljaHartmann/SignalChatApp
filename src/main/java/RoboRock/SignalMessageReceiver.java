@@ -16,8 +16,9 @@ public class SignalMessageReceiver {
     //TODO Pause
     static Map<List<String>, Command> patternMap = Map.ofEntries(
             new AbstractMap.SimpleEntry<>(List.of("wo bist du"), FIND),
-            new AbstractMap.SimpleEntry<>(List.of("wohnung", "alles"), CLEAN),
+            new AbstractMap.SimpleEntry<>(List.of("wohnung", "alles", "weiter", "fortsetzen"), CLEAN),
             new AbstractMap.SimpleEntry<>(List.of("stop", "anhalten"), STOP),
+            new AbstractMap.SimpleEntry<>(List.of("pause"), PAUSE),
             new AbstractMap.SimpleEntry<>(List.of("zurück", "laden"), CHARGE),
             new AbstractMap.SimpleEntry<>(List.of("küche"), KUECHE),
             new AbstractMap.SimpleEntry<>(List.of("schlafzimmer"), SCHLAFZIMMER),
@@ -57,7 +58,12 @@ public class SignalMessageReceiver {
         } else if (command == STOP) {
             response = RoboRockController.stop();
             if (response != null && response.code() == 200) {
-                SignalController.sendMessage("Oh, ich werde sofort anhalten.", groupId);
+                SignalController.sendMessage("Oh, ich werde sofort abbrechen.", groupId);
+            }
+        } else if (command == PAUSE) {
+            response = RoboRockController.pause();
+            if (response != null && response.code() == 200) {
+                SignalController.sendMessage("Ok, ich werde sofort anhalten.", groupId);
             }
         } else if (command == CHARGE) {
             response = RoboRockController.backToDock();
