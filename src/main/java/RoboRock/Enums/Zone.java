@@ -3,10 +3,10 @@ package RoboRock.Enums;
 public enum Zone implements Command{
 
     SCHLAFZIMMER(null),
-    KUECHE(-2),
-    ESSZIMMER(-3),
-    WOHNZIMMER(-4),
-    FLUR(-5);
+    KUECHE(-1),
+    ESSZIMMER(-2),
+    WOHNZIMMER(-3),
+    FLUR(-4);
 
 
     private final Integer value;
