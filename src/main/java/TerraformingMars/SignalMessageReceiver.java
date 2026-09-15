@@ -32,7 +32,7 @@ public class SignalMessageReceiver {
                 GlobalConfig.getInstance().setMarsThread(null);
             }
             SignalController.sendMessage("SILENCE! I KILL YOU!", groupId);
-        } else if (lowerCaseBody.equals("restart")) {
+        } else if (lowerCaseBody.equals("restart") || lowerCaseBody.equals("reboot")) {
             FileLogger.logInfo("Attempting to kill mars thread.");
             ScheduledFuture<?> marsThread = GlobalConfig.getInstance().getMarsThread();
             if (marsThread != null) {
