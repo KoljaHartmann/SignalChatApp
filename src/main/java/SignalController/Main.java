@@ -1,9 +1,7 @@
 package SignalController;
 
-import RoboRock.RoboRockController;
 import TerraformingMars.JsonEvaluator;
 
-import java.time.LocalTime;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -24,7 +22,7 @@ public class Main {
                 JsonEvaluator::processGameState, 50, 1500, TimeUnit.MILLISECONDS
         );
         GlobalConfig.getInstance().setMarsThread(marsThread);
-        SignalController.sendMessage("Willkommen zum Mars! Game url ist " + GlobalConfig.getInstance().getGameUrl(), GlobalConfig.getInstance().getSignalMarsConfigGroup());
+        SignalController.sendMessage("Willkommen zum Mars! Active Player: " + GlobalConfig.getInstance().getActivePlayer() + ", Timestamp: " + GlobalConfig.getInstance().getPingTimestamp(), GlobalConfig.getInstance().getSignalMarsConfigGroup());
 
         // Scheduled room cleanup each day at 09:00am
         /*

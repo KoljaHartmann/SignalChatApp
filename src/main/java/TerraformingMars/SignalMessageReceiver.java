@@ -5,6 +5,7 @@ import SignalController.SignalController;
 import SignalController.FileLogger;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Locale;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledFuture;
@@ -43,6 +44,8 @@ public class SignalMessageReceiver {
             );
             GlobalConfig.getInstance().setMarsThread(restartedMarsThread);
             SignalController.sendMessage("Habe versucht neu zu starten :)", groupId);
+        } else if (lowerCaseBody.equals("time") || lowerCaseBody.equals("timestamp")) {
+            SignalController.sendMessage("Aktuelle Zeit: " + Instant.now().getEpochSecond() + " Timestamp: " + GlobalConfig.getInstance().getPingTimestamp(), groupId);
         } else {
             System.out.println("ERROR: unknown Command " + lowerCaseBody);
             SignalController.sendMessage("ERROR: unknown Command " + lowerCaseBody, groupId);

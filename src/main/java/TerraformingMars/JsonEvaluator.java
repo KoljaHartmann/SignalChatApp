@@ -15,7 +15,6 @@ import static TerraformingMars.Phases.*;
 public class JsonEvaluator {
 
     private static String lastUsedUrl = "";
-    private static long lastPingToMars = 0;
     private static JSONObject lastJson;
     private static JSONObject currentJson;
     private static final GlobalConfig globalConfig = GlobalConfig.getInstance();
@@ -161,8 +160,9 @@ public class JsonEvaluator {
     }
 
     public static void processGameState() {
-        if (lastPingToMars >= Instant.now().getEpochSecond()) {
-            FileLogger.logInfo("Avoiding DDOS. Last ping to mars was " + Instant.ofEpochSecond(lastPingToMars));
+        //TODO Spielerwechsel wärend des Reboot müsste hier abgehandelt werden
+        if (GlobalConfig.getInstance().getPingTimestamp() >= Instant.now().getEpochSecond()) {
+            FileLogger.logInfo("Avoiding DDOS. Last ping to mars was " + Instant.ofEpochSecond(GlobalConfig.getInstance().getPingTimestamp()));
             return;
         }
         try {
@@ -183,18 +183,13 @@ public class JsonEvaluator {
                 JsonEvaluator.evaluateSendingMessage(lastJson, currentJson);
             }
             lastJson = currentJson;
-            lastPingToMars = Instant.now().getEpochSecond();
         } catch (Throwable e) {
             FileLogger.logError("Error in the Mars Json Check:", e);
             FileLogger.logError("lastJson: " + lastJson);
             FileLogger.logError("currentJson" + currentJson);
             lastJson = currentJson;
-            lastPingToMars = Instant.now().getEpochSecond();
+            GlobalConfig.getInstance().setPingTimestamp(Instant.now().getEpochSecond());
         }
-    }
-
-    public static void resetLastPingToMars() {
-        lastPingToMars = Instant.now().getEpochSecond() + 1;
     }
 
 }

@@ -1,6 +1,7 @@
 package TerraformingMars;
 
 import SignalController.FileLogger;
+import SignalController.GlobalConfig;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -13,29 +14,6 @@ public class MarsController {
 
 
     private static boolean marsGameFinished = false;
-    private static String activePlayer = "";
-    private static long lastPingTime = 0;
-
-    /*
-    public static JSONObject readMarsJson(String url) {
-        if (url == null || url.isEmpty()) {
-            System.out.println("No url configured");
-            return null;
-        }
-        try (InputStream is = new URL(url).openStream()) {
-            BufferedReader rd = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
-            int cp;
-            while ((cp = rd.read()) != -1) {
-                sb.append((char) cp);
-            }
-            return new JSONObject(sb.toString());
-        } catch (Exception e) {
-            FileLogger.logError("Problems reading JSON from " + url, e);
-            return null;
-        }
-    }
-     */
 
     public static JSONObject readMarsJson(String url) {
         if (url == null || url.isEmpty()) {
@@ -68,19 +46,19 @@ public class MarsController {
     }
 
     public static void storeActivePlayer(String player) {
-        activePlayer = player;
-        lastPingTime = Instant.now().getEpochSecond();
+        GlobalConfig.getInstance().setActivePlayer(player);
+        GlobalConfig.getInstance().setPingTimestamp(Instant.now().getEpochSecond());
     }
 
     public static String getActivePlayer() {
-        return activePlayer;
+        return GlobalConfig.getInstance().getActivePlayer();
     }
 
     public static long getLastPingTime() {
-        return lastPingTime;
+        return GlobalConfig.getInstance().getPingTimestamp();
     }
 
     public static void storePingTime() {
-        lastPingTime = Instant.now().getEpochSecond();
+        GlobalConfig.getInstance().setPingTimestamp(Instant.now().getEpochSecond());
     }
 }
